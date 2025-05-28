@@ -1,0 +1,7 @@
+resources/js/components/ui/*
+resources/js/ziggy.js
+resources/views/mail/*
+**/vendor
+**/public
+**/bootstrap
+**/storage
