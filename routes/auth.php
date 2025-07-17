@@ -8,3 +8,7 @@ Route::controller(\App\Http\Controllers\Auth\AuthenticatedSessionController::cla
         Route::post('/', 'login');
     });
 });
+
+Route::get('/dashboard', function () {
+    return inertia('dashboard');
+})->name('dashboard');

@@ -3,7 +3,7 @@ import { InputErrorMessage } from '@/components/input-error-message';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import AuthLayout from '@/layouts/auth-layout';
-import type { SharedData } from '@/types';
+import { type SharedData } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
