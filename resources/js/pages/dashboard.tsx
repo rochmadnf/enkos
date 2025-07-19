@@ -1,7 +1,5 @@
-import AppLayout from "@/layouts/app-layout";
+import AppLayout from '@/layouts/app-layout';
 
-export default function DashboardPage(){
-    return (
-        <AppLayout></AppLayout>
-    );
+export default function DashboardPage() {
+    return <AppLayout></AppLayout>;
 }

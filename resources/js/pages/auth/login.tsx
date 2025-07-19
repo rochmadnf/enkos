@@ -8,7 +8,9 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 export default function Login() {
-    const {app: {office_name: officeName}} = usePage<SharedData>().props;
+    const {
+        app: { office_name: officeName },
+    } = usePage<SharedData>().props;
     const form = useForm<{
         username: string;
         password: string;

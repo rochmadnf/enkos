@@ -3,7 +3,7 @@ import { HTMLAttributes } from 'react';
 
 export function InputErrorMessage({ className, message, ...props }: HTMLAttributes<HTMLParagraphElement> & { message?: string }) {
     return (
-        <p {...props} className={cn('text-destructive mt-1 text-sm first-letter:uppercase', className)}>
+        <p {...props} className={cn('mt-1 text-sm text-destructive first-letter:uppercase', className)}>
             {message}
         </p>
     );
