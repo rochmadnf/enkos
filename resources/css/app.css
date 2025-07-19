@@ -29,6 +29,7 @@
     --color-muted: var(--muted);
     --color-muted-foreground: var(--muted-foreground);
     --color-accent: var(--accent);
+    --color-crimson: var(--crimson);
     --color-accent-foreground: var(--accent-foreground);
     --color-destructive: var(--destructive);
     --color-border: var(--border);
@@ -66,6 +67,7 @@
     --accent: oklch(0.968 0.007 247.896);
     --accent-foreground: oklch(0.208 0.042 265.755);
     --destructive: oklch(0.577 0.245 27.325);
+    --crimson: oklch(0.5915 0.202 21.24);
     --border: oklch(0.929 0.013 255.508);
     --input: oklch(0.929 0.013 255.508);
     --ring: oklch(0.704 0.04 256.788);
@@ -124,5 +126,15 @@
     }
     body {
         @apply bg-background text-foreground;
+    }
+}
+
+@layer utilities {
+    .flex-row-center {
+        @apply flex flex-row items-center justify-center;
+    }
+
+    .flex-col-center {
+        @apply flex flex-col items-center justify-center;
     }
 }
