@@ -58,9 +58,9 @@ export const NAV_ITEMS: NavItem[] = [
         permissions: [],
     },
     {
-        uuid: '9f6daee3-f6b0-49f3-a296-c731b9376a99',
+        uuid: 'mni_002',
         title: 'Tabung',
-        href: route('cylinder.gas'),
+        href: route('gas_cylinder.index'),
         icon: Flame,
         permissions: [],
     },
