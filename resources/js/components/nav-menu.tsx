@@ -1,48 +1,14 @@
+import { ActiveIndicatorProps, NAV_ITEMS, NavItemProps } from '@/config/nav';
 import { cn } from '@/lib/utils';
 import { Link, usePage } from '@inertiajs/react';
 import { gsap } from 'gsap';
-import { Flame, LayoutGrid, LucideIcon, MapPinned } from 'lucide-react';
 import { useCallback, useEffect, useRef } from 'react';
-
-// ---------- Types ----------
-export interface NavItem {
-    uuid: string;
-    title: string;
-    href: string;
-    icon?: LucideIcon | null;
-    permissions: string[];
-}
 
 export type PageDataProps = {
     page: {
         uuid: string;
     };
 };
-
-// ---------- Static Config ----------
-const NAV_ITEMS: NavItem[] = [
-    {
-        uuid: '9f6dae8c-f501-419c-83eb-0d68df9080a2',
-        title: 'Dashboard',
-        href: route('dashboard'),
-        icon: LayoutGrid,
-        permissions: [],
-    },
-    {
-        uuid: '9f6daee3-f6b0-49f3-a296-c731b9376a99',
-        title: 'Tabung',
-        href: route('cylinder.gas'),
-        icon: Flame,
-        permissions: [],
-    },
-    {
-        uuid: '9f6daee5-c3e5-413c-981f-08ce14c466e1',
-        title: 'Lokasi',
-        href: route('locations'),
-        icon: MapPinned,
-        permissions: [],
-    },
-];
 
 const INDICATOR_CONFIG = {
     fillOpacity: 0.425,
@@ -58,7 +24,7 @@ const INDICATOR_CONFIG = {
 // ---------- Components ----------
 export function NavMenu() {
     return (
-        <nav aria-label="navigation-menu" dir="ltr" className="relative flex justify-center items-start h-28">
+        <nav aria-label="navigation-menu" dir="ltr" className="relative flex h-28 items-start justify-center">
             <NavItemWrappers />
         </nav>
     );
@@ -69,7 +35,7 @@ export function NavItemWrappers() {
     const { page } = usePage<PageDataProps>().props;
 
     return (
-        <ul className="relative flex gap-x-2 rounded-md bg-white/90 p-5 text-lg font-medium text-gray-400 uppercase shadow ring-1 shadow-slate-300/80 ring-slate-300/80">
+        <ul className="relative flex gap-x-2 rounded-md bg-white/90 p-5 text-lg font-medium text-app-primary-400/80 uppercase shadow ring-1 shadow-app-primary-200/80 ring-app-primary-300">
             <ActiveIndicator activeUuid={page.uuid} itemRefs={itemRefs} />
             {NAV_ITEMS.map((menu) => (
                 <NavItem
@@ -86,36 +52,21 @@ export function NavItemWrappers() {
     );
 }
 
-interface NavItemProps extends Omit<NavItem, 'permissions' | 'icon'> {
-    isActive: boolean;
-    refCallback: (el: HTMLLIElement | null) => void;
-}
-
 export function NavItem({ href, title, isActive, refCallback }: NavItemProps) {
     return (
         <li
             ref={refCallback}
             data-active={isActive}
             className={cn(
-                'group relative z-1 block px-4 py-2 transition-colors duration-500 hover:text-pink-500',
-                isActive && 'text-pink-500'
+                'group relative z-1 block px-4 py-2 transition-colors duration-500 hover:text-app-primary-600',
+                isActive && 'text-app-primary-600',
             )}
         >
-            <Link
-                href={href}
-                prefetch
-                className="inline-flex items-center gap-x-1.5"
-                aria-current={isActive ? 'page' : undefined}
-            >
+            <Link href={href} prefetch className="inline-flex items-center gap-x-1.5" aria-current={isActive ? 'page' : undefined}>
                 {title}
             </Link>
         </li>
     );
-}
-
-interface ActiveIndicatorProps {
-    activeUuid: string;
-    itemRefs: React.RefObject<Map<string, HTMLLIElement>>;
 }
 
 export function ActiveIndicator({ activeUuid, itemRefs }: ActiveIndicatorProps) {
@@ -197,7 +148,7 @@ export function ActiveIndicator({ activeUuid, itemRefs }: ActiveIndicatorProps) 
     return (
         <span
             ref={indicatorRef}
-            className="absolute top-0 left-0 rounded-md border border-pink-400/60 bg-pink-200/80"
+            className="absolute top-0 left-0 rounded-md border border-app-primary-300 bg-app-primary-200/80"
             style={{
                 width: 0,
                 height: INDICATOR_CONFIG.underlineHeight,
