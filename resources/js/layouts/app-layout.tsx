@@ -4,10 +4,10 @@ import { PropsWithChildren } from 'react';
 
 export default function AppLayout({ children }: PropsWithChildren) {
     return (
-        <main className="relative mx-auto flex h-dvh w-full max-w-[90rem] flex-col gap-y-2 text-slate-900">
+        <div className="relative mx-auto flex h-dvh w-full max-w-[90rem] flex-col gap-y-2 px-8 text-slate-900 @min-[90rem]:px-0">
             <Header />
-            <section className="h-auto flex-1 border border-blue-500">{children}</section>
+            <main className="flex h-auto w-full flex-1 flex-col py-4">{children}</main>
             <NavMenu />
-        </main>
+        </div>
     );
 }
