@@ -25,6 +25,7 @@ export type PageDataProps = {
         uuid: string;
         name: string;
         breadcrumbs: {
+            id: string;
             label: string;
             href: string;
         }[];
