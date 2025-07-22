@@ -20,18 +20,16 @@ Route::middleware('auth')->group(function () {
         ]);
     })->name('dashboard');
 
-    Route::get('/cylinder-gas', function () {
-        return inertia('dashboard', [
-            'page' => [
-                'uuid' => '9f6daee3-f6b0-49f3-a296-c731b9376a99',
-            ]
-        ]);
-    })->name('cylinder.gas');
+    Route::controller(\App\Http\Controllers\GasCylinderController::class)->prefix('gas-cylinders')->group(function () {
+        Route::get('/', 'index')->name('gas_cylinder.index');
+        Route::get('/add', 'create')->name('gas_cylinder.create');
+    });
 
     Route::get('/locations', function () {
         return inertia('dashboard', [
             'page' => [
                 'uuid' => '9f6daee5-c3e5-413c-981f-08ce14c466e1',
+                'name' => 'Lokasi'
             ]
         ]);
     })->name('locations');
