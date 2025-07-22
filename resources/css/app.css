@@ -32,6 +32,19 @@
     --color-crimson: var(--crimson);
     --color-accent-foreground: var(--accent-foreground);
     --color-destructive: var(--destructive);
+
+    --color-app-primary-50: oklch(97.14% 0.0141 343.2);
+    --color-app-primary-100: oklch(94.74% 0.0309 340.55);
+    --color-app-primary-200: oklch(89.88% 0.0622 342.38);
+    --color-app-primary-300: oklch(82.23% 0.1161 345.05);
+    --color-app-primary-400: oklch(72.65% 0.1864 348.97);
+    --color-app-primary-500: oklch(64.94% 0.2301 354.19);
+    --color-app-primary-600: oklch(59.88% 0.2263 359.72);
+    --color-app-primary-700: oklch(53.25% 0.2061 3.4);
+    --color-app-primary-800: oklch(46.49% 0.1763 2.89);
+    --color-app-primary-900: oklch(41.19% 0.15 1.66);
+    --color-app-primary-950: oklch(28.77% 0.1093 2.47);
+
     --color-border: var(--border);
     --color-input: var(--input);
     --color-ring: var(--ring);
