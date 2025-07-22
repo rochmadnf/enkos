@@ -24,7 +24,7 @@ export function UserNav() {
     const nameRef = useRef<HTMLSpanElement>(null);
 
     useEffect(() => {
-        gsap.set(buttonRef.current, { width: 54 });
+        gsap.set(buttonRef.current, { width: 62 });
         gsap.set(nameRef.current, { opacity: 0, width: 0 });
     }, []);
 
@@ -45,7 +45,7 @@ export function UserNav() {
 
     const handleClose = () => {
         gsap.to(buttonRef.current, {
-            width: 54,
+            width: 62,
             duration: 0.3,
             ease: 'power2.inOut',
         });
@@ -62,9 +62,9 @@ export function UserNav() {
             <DropdownMenuTrigger asChild>
                 <button
                     ref={buttonRef}
-                    className="inline-flex items-center overflow-hidden rounded-full border border-app-primary-300/50 bg-app-primary-100 px-2 py-2 text-app-primary-950 transition-all outline-none hover:border-app-primary-300 data-[state=open]:gap-x-2"
+                    className="inline-flex cursor-pointer items-center overflow-hidden rounded-full border border-app-primary-300/50 bg-app-primary-100 px-2 py-2 text-app-primary-950 transition-all outline-none hover:border-app-primary-300 data-[state=open]:gap-x-2"
                 >
-                    <Avatar className="size-9 rounded-full">
+                    <Avatar className="size-11 rounded-full">
                         <AvatarImage src={user.avatar ?? '#'} alt="Rochmad Labs" />
                         <AvatarFallback className="rounded-full text-white">{getInitialName(user.name)}</AvatarFallback>
                     </Avatar>
