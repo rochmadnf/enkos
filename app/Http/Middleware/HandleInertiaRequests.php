@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\AuthenticatedUserResource;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -38,13 +39,13 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user' => $request->user() ? AuthenticatedUserResource::make($request->user()) : null,
             ],
             'app' => [
                 'office_name' => env('APP_OFFICE_NAME', 'Rochmad Labs'),
             ],
-            'ziggy' => fn(): array => [
-                ...(new \Tighten\Ziggy\Ziggy)->toArray(),
+            'ziggy' => fn (): array => [
+                ...(new \Tighten\Ziggy\Ziggy())->toArray(),
                 'location' => $request->url(),
             ],
         ];
