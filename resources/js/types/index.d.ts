@@ -19,3 +19,14 @@ export interface User {
     role: string;
     permissions: string[];
 }
+
+export type PageDataProps = {
+    page: {
+        uuid: string;
+        name: string;
+        breadcrumbs: {
+            label: string;
+            href: string;
+        }[];
+    };
+};

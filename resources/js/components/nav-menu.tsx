@@ -1,14 +1,9 @@
 import { ActiveIndicatorProps, NAV_ITEMS, NavItemProps } from '@/config/nav';
 import { cn } from '@/lib/utils';
+import { PageDataProps } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { gsap } from 'gsap';
 import { useCallback, useEffect, useRef } from 'react';
-
-export type PageDataProps = {
-    page: {
-        uuid: string;
-    };
-};
 
 const INDICATOR_CONFIG = {
     fillOpacity: 0.425,
