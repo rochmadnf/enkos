@@ -23,6 +23,7 @@ export default function Login() {
         e.preventDefault();
 
         form.post(route('login'), {
+            replace: true,
             onFinish: () => form.reset('password'),
         });
     };
