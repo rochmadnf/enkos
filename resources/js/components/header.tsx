@@ -9,7 +9,7 @@ export function Header() {
     const { page } = usePage<PageDataProps>().props;
 
     return (
-        <header className="relative flex max-h-28 min-h-[90px] flex-row items-center justify-between rounded-b-2xl border border-t-0 border-app-primary-300 bg-white px-8 py-6 shadow-sm shadow-app-primary-600/30">
+        <header className="relative flex max-h-28 min-h-[90px] flex-row items-center justify-between rounded-b-2xl border border-t-0 border-app-primary-300/70 bg-white px-8 py-6">
             <div className="flex flex-row items-center gap-x-4">
                 <div className="flex w-40 items-center justify-center rounded-md">
                     <AppLogo className="w-full" />
