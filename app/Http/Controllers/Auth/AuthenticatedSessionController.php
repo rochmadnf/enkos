@@ -24,7 +24,6 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
-
     public function logout(\Illuminate\Http\Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();

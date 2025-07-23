@@ -9,7 +9,7 @@ enum PurchaseTypeEnum: int
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::CYLINDER_GAS => 'Tabung + Gas',
             self::REFILL => 'Refill',
         };
