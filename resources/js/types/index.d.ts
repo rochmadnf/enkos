@@ -24,10 +24,21 @@ export type PageDataProps = {
     page: {
         uuid: string;
         name: string;
+        description: string;
         breadcrumbs: {
             id: string;
             label: string;
             href: string;
         }[];
     };
+};
+
+export type ColorCombinationProps = {
+    bg: string;
+    text: string;
+};
+
+export type SelectOptionProps = {
+    id: string;
+    label: string;
 };
