@@ -29,12 +29,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/add', 'create')->name('gas_cylinder.create');
         });
 
-    Route::get('/locations', function () {
-        return inertia('dashboard', [
-            'page' => [
-                'uuid' => '9f6daee5-c3e5-413c-981f-08ce14c466e1',
-                'name' => 'Lokasi',
-            ],
-        ]);
-    })->name('locations');
+    Route::controller(\App\Http\Controllers\GasLocationController::class)
+        ->prefix('/gas-locations')
+        ->group(function () {
+            Route::get('/', 'index')->name('gas_location.index');
+            Route::get('/add', 'create')->name('gas_location.create');
+            Route::post('/add', 'store')->name('gas_location.store');
+            Route::delete('/{gas_location}', 'destroy')->name('gas_location.delete');
+
+            Route::get('/{gas_location}/edit', 'edit')->name('gas_location.edit');
+            Route::patch('/{gas_location}/update', 'update')->name('gas_location.update');
+        });
 });
