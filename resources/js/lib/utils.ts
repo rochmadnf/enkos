@@ -13,3 +13,19 @@ export function getInitialName(name: string) {
         ?.join('')
         .toUpperCase();
 }
+
+export function NumberOrNull(value: number | string): number | null {
+    const str = value.toString();
+
+    // Jika kosong, null
+    if (str === '') return null;
+
+    // Jika sedang mengetik angka desimal (contoh ".", "-.", "0.") → anggap sementara null
+    if (/^-?\d*\.$/.test(str) || str === '-' || str === '.') {
+        return null;
+    }
+
+    // Konversi ke number, cek valid
+    const result = Number(str);
+    return isNaN(result) ? null : result;
+}

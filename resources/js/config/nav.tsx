@@ -65,9 +65,9 @@ export const NAV_ITEMS: NavItem[] = [
         permissions: [],
     },
     {
-        uuid: '9f6daee5-c3e5-413c-981f-08ce14c466e1',
+        uuid: 'mni_003',
         title: 'Lokasi',
-        href: route('locations'),
+        href: route('gas_location.index'),
         icon: MapPinned,
         permissions: [],
     },

@@ -3,11 +3,11 @@ import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { cva, VariantProps } from 'class-variance-authority';
 
-const inputVariants = cva(
+export const inputVariants = cva(
     cn(
         'flex w-full min-w-0 rounded-md border border-slate-900/25 bg-transparent px-3 py-2 text-base tracking-wider shadow-xs transition-[color,box-shadow] duration-300 outline-none selection:text-primary-foreground file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50',
         'focus-visible:ring-[2.5px] focus-visible:ring-offset-2',
-        'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
+        // 'aria-invalid:border-destructive aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40',
     ),
     {
         variants: {

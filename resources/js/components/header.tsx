@@ -9,17 +9,12 @@ export function Header() {
     const { page } = usePage<PageDataProps>().props;
 
     return (
-        <header className="relative flex max-h-28 min-h-[90px] flex-row items-center justify-between rounded-b-2xl border border-t-0 border-app-primary-300/70 bg-white px-8 py-6">
+        <header className="relative flex max-h-28 min-h-[90px] flex-row items-center justify-between rounded-b-2xl border border-t-0 border-app-primary-300/70 bg-app-primary-100/50 px-8 py-6">
             <div className="flex flex-row items-center gap-x-4">
-                <div className="flex w-40 items-center justify-center rounded-md">
+                <div className="flex w-36 items-center justify-center rounded-md sm:w-40">
                     <AppLogo className="w-full" />
                 </div>
-                <div className="flex flex-col gap-y-1.5">
-                    <h1 className="scroll-m-20 text-[1.75rem] leading-[calc(2.1_/_1.75)] font-semibold tracking-tight uppercase select-none">
-                        {page.name}
-                    </h1>
-                    <BreadcrumbNav breadcrumbs={page.breadcrumbs} />
-                </div>
+                <BreadcrumbNav breadcrumbs={page.breadcrumbs} />
             </div>
 
             <UserNav />
@@ -29,7 +24,7 @@ export function Header() {
 
 export function BreadcrumbNav({ breadcrumbs }: Pick<PageDataProps['page'], 'breadcrumbs'>) {
     return (
-        <Breadcrumb>
+        <Breadcrumb className="hidden md:block">
             <BreadcrumbList>
                 <BreadcrumbItem>
                     <BreadcrumbLink href="#">
@@ -51,11 +46,11 @@ export function BreadcrumbNavItem({ href, label, isLastItem = false }: { href: s
         <>
             <BreadcrumbItem>
                 {!isLastItem ? (
-                    <BreadcrumbLink asChild>
+                    <BreadcrumbLink asChild className="hover:text-app-primary-950">
                         <Link href={href}>{label}</Link>
                     </BreadcrumbLink>
                 ) : (
-                    <BreadcrumbPage className="text-app-primary-600">{label}</BreadcrumbPage>
+                    <BreadcrumbPage className="text-app-primary-950">{label}</BreadcrumbPage>
                 )}
             </BreadcrumbItem>
             {!isLastItem ? <BreadcrumbSeparator> / </BreadcrumbSeparator> : null}
