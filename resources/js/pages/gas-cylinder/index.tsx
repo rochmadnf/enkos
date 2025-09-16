@@ -11,14 +11,8 @@ export default function GasCylinderIndex() {
             <Head title="Tabung Gas">
                 <meta name="description" content="Daftar Tabung Gas" />
             </Head>
-            <MainContent
-                contentName="Daftar Tabung"
-                contentDesc="Menampilkan tabung yang sudah tersimpan di sistem."
-                buttonIcon={<Plus />}
-                buttonLabel="Tambah Data"
-                url={route('gas_cylinder.create')}
-            >
-                <CardContent>ABCDe</CardContent>
+            <MainContent buttonIcon={<Plus />} buttonLabel="Tambah Data" url={route('gas_cylinder.create')}>
+                <CardContent></CardContent>
             </MainContent>
         </>
     );

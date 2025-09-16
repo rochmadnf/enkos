@@ -150,4 +150,12 @@
     .flex-col-center {
         @apply flex flex-col items-center justify-center;
     }
+
+    .container-wrapper {
+        @apply mx-auto w-full border-app-primary-300/70 min-[1536px]:max-w-[1366px] min-[1536px]:border-x;
+    }
+
+    .border-grid {
+        @apply border-app-primary-300/70;
+    }
 }

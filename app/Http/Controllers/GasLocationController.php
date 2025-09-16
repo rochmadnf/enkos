@@ -56,6 +56,16 @@ class GasLocationController extends Controller
         return to_route('gas_location.index');
     }
 
+    public function show(string $id): InertiaResponse
+    {
+        return inertia('gas-location/show', [
+            'page' => $this->pageMeta('Detail Lokasi', 'Detail lokasi tabung gas.', [
+                ['id' => 'glbrc_001', 'href' => route('gas_location.index'), 'label' => 'Lokasi Tabung'],
+            ]),
+            'detail' => GasLocationResource::make($this->gasLocationRepo->find($id)),
+        ]);
+    }
+
     public function destroy(string $id): RedirectResponse
     {
         $this->gasLocationRepo->delete($id);

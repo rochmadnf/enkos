@@ -29,3 +29,16 @@ export function NumberOrNull(value: number | string): number | null {
     const result = Number(str);
     return isNaN(result) ? null : result;
 }
+
+export function formatNumberShort(num: number): string {
+    if (num >= 1_000_000_000) {
+        return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'M'; // Miliar
+    }
+    if (num >= 1_000_000) {
+        return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'jt'; // Juta
+    }
+    if (num >= 1_000) {
+        return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'rb'; // Ribu
+    }
+    return num.toString();
+}

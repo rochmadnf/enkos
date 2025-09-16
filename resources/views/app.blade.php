@@ -19,7 +19,7 @@
     @inertiaHead
 </head>
 
-<body class="font-sans antialiased bg-app-primary-50/50">
+<body class="font-sans antialiased">
     @inertia
 </body>
 

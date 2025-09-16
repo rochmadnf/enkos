@@ -6,7 +6,7 @@ export default function Dashboard() {
     return (
         <>
             <Head title="Dashboard"></Head>
-            <p>Ini Content nya</p>
+            <p>Coming Soon...</p>
         </>
     );
 }

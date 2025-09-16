@@ -12,6 +12,7 @@ class GasCylinderController extends Controller
             'page' => [
                 'uuid' => 'mni_002',
                 'name' => ($pageName = 'Tabung Gas'),
+                'description' => 'Menampilkan tabung yang sudah tersimpan di sistem.',
                 'breadcrumbs' => [['id' => 'gcbrc_001', 'href' => '#', 'label' => $pageName]],
             ],
         ]);
@@ -22,10 +23,11 @@ class GasCylinderController extends Controller
         return inertia('gas-cylinder/add', [
             'page' => [
                 'uuid' => 'mni_002',
-                'name' => ($pageName = 'Tabung Gas'),
+                'name' => ($pageName = 'Tambah Tabung Gas'),
+                'description' => 'Form untuk menambah jenis tabung gas.',
                 'breadcrumbs' => [
-                    ['id' => 'gcbrc_001', 'href' => route('gas_cylinder.index'), 'label' => $pageName],
-                    ['id' => 'gcbrc_002', 'href' => '#', 'label' => 'Tambah Tabung'],
+                    ['id' => 'gcbrc_001', 'href' => route('gas_cylinder.index'), 'label' => 'Tabung Gas'],
+                    ['id' => 'gcbrc_002', 'href' => '#', 'label' => $pageName],
                 ],
             ],
         ]);

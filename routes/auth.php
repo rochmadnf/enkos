@@ -33,8 +33,11 @@ Route::middleware('auth')->group(function () {
         ->prefix('/gas-locations')
         ->group(function () {
             Route::get('/', 'index')->name('gas_location.index');
+
             Route::get('/add', 'create')->name('gas_location.create');
             Route::post('/add', 'store')->name('gas_location.store');
+
+            Route::get('/detail/{gas_location}', 'show')->name('gas_location.show');
             Route::delete('/{gas_location}', 'destroy')->name('gas_location.delete');
 
             Route::get('/{gas_location}/edit', 'edit')->name('gas_location.edit');

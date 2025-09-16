@@ -138,7 +138,7 @@ export function DataTable() {
                     ) : null}
                 </div>
             </div>
-            <div className={cn('relative min-h-0 min-w-0 flex-1 overflow-auto border-x border-app-primary-300 bg-background p-6')}>
+            <div className={cn('relative flex-1 overflow-auto border-x border-app-primary-300 bg-background p-6')}>
                 {isLoading ? (
                     <div className="flex-col-center h-full w-full gap-y-4 text-slate-900/70">
                         <LoadingState className="size-20 fill-app-primary-500" />
@@ -175,9 +175,13 @@ export function DataTable() {
                                 </div>
                                 <div className="absolute bottom-0 left-0 grid h-9 w-full grid-cols-3 border-t border-app-primary-300">
                                     <Tooltip label="Detail Data">
-                                        <button className="inline-flex cursor-pointer items-center justify-center bg-white transition duration-150 first:border-r first:border-r-app-primary-300 last:border-l last:border-l-app-primary-300 hover:bg-blue-500 hover:text-white [&_svg]:pointer-events-none [&_svg]:size-5">
+                                        <Link
+                                            href={route('gas_location.show', { gas_location: row.id })}
+                                            prefetch
+                                            className="inline-flex cursor-pointer items-center justify-center bg-white transition duration-150 first:border-r first:border-r-app-primary-300 last:border-l last:border-l-app-primary-300 hover:bg-blue-500 hover:text-white [&_svg]:pointer-events-none [&_svg]:size-5"
+                                        >
                                             <InfoIcon />
-                                        </button>
+                                        </Link>
                                     </Tooltip>
                                     <Tooltip label="Ubah Data">
                                         <Link
