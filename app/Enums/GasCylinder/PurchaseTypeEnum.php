@@ -14,4 +14,15 @@ enum PurchaseTypeEnum: int
             self::REFILL => 'Refill',
         };
     }
+
+    public static function toArray(): array
+    {
+        return array_map(
+            fn($case) => [
+                'id' => $case->value,
+                'name' => $case->label(),
+            ],
+            self::cases(),
+        );
+    }
 }
