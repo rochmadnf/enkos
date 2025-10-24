@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
         ->prefix('gas-cylinders')
         ->group(function () {
             Route::get('/', 'index')->name('gas_cylinder.index');
-            Route::get('/add', 'create')->name('gas_cylinder.create');
+            Route::post('/', 'store')->name('gas_cylinder.store');
         });
 
     Route::controller(\App\Http\Controllers\GasLocationController::class)
