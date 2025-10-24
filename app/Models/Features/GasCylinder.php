@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models\GasCylinder;
+namespace App\Models\Features;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +12,7 @@ class GasCylinder extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $fillable = ['name', 'purchase_type'];
+    protected $fillable = ['name', 'purchase_type', 'total_stock'];
 
     protected function casts(): array
     {
