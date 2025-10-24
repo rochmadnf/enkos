@@ -2,10 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\GasCylinder\StoreRequest;
+use Illuminate\Http\RedirectResponse;
 use Inertia\Response as InertiaResponse;
 
 class GasCylinderController extends Controller
 {
+
+    public function __construct(protected readonly \App\Repositories\Contracts\GasCylinderRepositoryInterface $gCylRepo) {}
+
     public function index(): InertiaResponse
     {
         return inertia('gas-cylinder/index', [
@@ -15,21 +20,14 @@ class GasCylinderController extends Controller
                 'description' => 'Menampilkan tabung yang sudah tersimpan di sistem.',
                 'breadcrumbs' => [['id' => 'gcbrc_001', 'href' => '#', 'label' => $pageName]],
             ],
+            'purchase_type' => \App\Enums\GasCylinder\PurchaseTypeEnum::toArray(),
         ]);
     }
 
-    public function create(): InertiaResponse
+    public function store(StoreRequest $request): RedirectResponse
     {
-        return inertia('gas-cylinder/add', [
-            'page' => [
-                'uuid' => 'mni_002',
-                'name' => ($pageName = 'Tambah Tabung Gas'),
-                'description' => 'Form untuk menambah jenis tabung gas.',
-                'breadcrumbs' => [
-                    ['id' => 'gcbrc_001', 'href' => route('gas_cylinder.index'), 'label' => 'Tabung Gas'],
-                    ['id' => 'gcbrc_002', 'href' => '#', 'label' => $pageName],
-                ],
-            ],
-        ]);
+        $this->gCylRepo->create($request->validated());
+
+        return to_route('gas_cylinder.index');
     }
 }

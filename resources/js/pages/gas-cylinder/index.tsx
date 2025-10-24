@@ -4,8 +4,9 @@ import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
 import { PageDataProps } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { EllipsisIcon, FileSymlinkIcon, FunnelPlusIcon, PlusIcon, SearchIcon } from 'lucide-react';
-import { ReactNode } from 'react';
+import { EllipsisIcon, FileSymlinkIcon, FunnelPlusIcon, SearchIcon } from 'lucide-react';
+import { CSSProperties, ReactNode } from 'react';
+import { ButtonAdd } from './partials/_btn-add';
 
 export default function GasCylinderIndex() {
     const { page } = usePage<PageDataProps>().props;
@@ -32,19 +33,13 @@ export default function GasCylinderIndex() {
                                 placeholder="Cari: minimal 3 huruf..."
                                 type="search"
                             />
-                            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-app-primary-400/80 peer-placeholder-shown:text-app-primary-400/80 peer-disabled:opacity-50 peer-[&:not(:placeholder-shown)]:text-app-primary-900">
+                            <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-app-primary-400/80 peer-not-placeholder-shown:text-app-primary-900 peer-placeholder-shown:text-app-primary-400/80 peer-disabled:opacity-50">
                                 <SearchIcon className="size-5" />
                             </div>
                         </div>
 
                         <div className="inline-flex -space-x-px rounded-md shadow-xs rtl:space-x-reverse">
-                            <Button
-                                className="rounded-none border-app-primary-300 text-app-primary-900 shadow-none first:rounded-s-md last:rounded-e-md hover:border-app-primary-500 hover:bg-app-primary-500 hover:text-white focus-visible:z-10"
-                                variant="outline"
-                            >
-                                <PlusIcon className="-ms-1" aria-hidden="true" />
-                                Tambah
-                            </Button>
+                            <ButtonAdd />
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                     <Button
@@ -79,17 +74,27 @@ export default function GasCylinderIndex() {
                                         <th rowSpan={2} className="border-r border-app-primary-300 py-2 last:border-r-0">
                                             Nama Tabung
                                         </th>
-                                        <th colSpan={3} className="border-r border-b border-app-primary-300 py-2 text-center last:border-r-0">
+                                        <th colSpan={6} className="border-r border-b border-app-primary-300 py-2 text-center last:border-r-0">
                                             Stok
                                         </th>
                                         <th rowSpan={2} className="border-r border-b border-app-primary-300 py-2 last:border-r-0">
                                             Aksi
                                         </th>
                                     </tr>
-                                    <tr className="border-b border-app-primary-300">
-                                        <th className="border-r border-app-primary-300 py-2">Baru</th>
-                                        <th className="border-r border-app-primary-300 py-2">Kosong</th>
-                                        <th className="border-r border-app-primary-300 py-2">Bocor</th>
+                                    <tr
+                                        className="border-b border-app-primary-300"
+                                        style={
+                                            {
+                                                '--th-width': '80px',
+                                            } as CSSProperties
+                                        }
+                                    >
+                                        <th className="w-(--th-width) border-r border-app-primary-300 py-2">Isi</th>
+                                        <th className="w-(--th-width) border-r border-app-primary-300 py-2">Kosong</th>
+                                        <th className="w-(--th-width) border-r border-app-primary-300 py-2">Bocor</th>
+                                        <th className="w-(--th-width) border-r border-app-primary-300 py-2">Pinjam</th>
+                                        <th className="w-(--th-width) border-r border-app-primary-300 py-2">Dipinjam</th>
+                                        <th className="w-(--th-width) border-r border-app-primary-300 py-2">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -98,13 +103,9 @@ export default function GasCylinderIndex() {
                                         <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">34</td>
                                         <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">100</td>
                                         <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">4</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">...</td>
-                                    </tr>
-                                    <tr className="border-b border-app-primary-300 last:border-b-0">
-                                        <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">Refill 5.5Kg</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">34</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">100</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">4</td>
+                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
+                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
+                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center font-bold last:border-r-0">138</td>
                                         <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">...</td>
                                     </tr>
                                 </tbody>
