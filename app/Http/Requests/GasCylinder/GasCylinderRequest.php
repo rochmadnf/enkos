@@ -16,7 +16,6 @@ class GasCylinderRequest extends FormRequest
     {
         return [
             'name' => ['bail', 'required', 'string', 'min:2', 'max:255'],
-            'purchase_type' => ['bail', 'required', 'integer',  Rule::enum(\App\Enums\GasCylinder\PurchaseTypeEnum::class)],
             'total_stock' => ['bail', 'required', 'integer', 'min:1'],
         ];
     }
@@ -25,7 +24,6 @@ class GasCylinderRequest extends FormRequest
     {
         return [
             'name' => 'Nama Tabung',
-            'purchase_type' => 'Jenis Pembelian',
             'total_stock' => 'Total Stok',
         ];
     }

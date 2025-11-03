@@ -1,9 +1,7 @@
 import { FormInput } from '@/components/form/input';
-import { FormSelect } from '@/components/form/select';
-import { SelectItem } from '@/components/select';
 import { Button } from '@/components/ui/button';
 import { PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useForm, usePage } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { Popover } from '@radix-ui/react-popover';
 import { PlusIcon } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
@@ -11,23 +9,14 @@ import toast from 'react-hot-toast';
 
 export type FormValues = {
     name: string;
-    purchase_type: number | undefined;
     total_stock: number;
 };
 
-export type PurchaseTypeOptions = {
-    id: number;
-    name: string;
-};
-
 export function ButtonAdd() {
-    const { purchase_type } = usePage<{ purchase_type: PurchaseTypeOptions[] }>().props;
-
     const [open, setOpen] = useState(false);
 
     const form = useForm<FormValues>({
         name: '',
-        purchase_type: undefined,
         total_stock: 1,
     });
 
@@ -80,24 +69,6 @@ export function ButtonAdd() {
                         onChange={(e) => form.setData('name', e.target.value)}
                         error={form.errors.name}
                     />
-
-                    <FormSelect
-                        label="Jenis Pembelian"
-                        name="purchase_type"
-                        required
-                        value={
-                            form.data.purchase_type !== 0 && form.data.purchase_type !== undefined ? form.data.purchase_type.toString() : undefined
-                        }
-                        onValueChange={(e) => form.setData('purchase_type', Number(e))}
-                        tabIndex={2}
-                        error={form.errors.purchase_type}
-                    >
-                        {purchase_type.map((opt) => (
-                            <SelectItem key={opt.id} value={opt.id.toString()}>
-                                {opt.name}
-                            </SelectItem>
-                        ))}
-                    </FormSelect>
 
                     <FormInput
                         label="Total Stok"

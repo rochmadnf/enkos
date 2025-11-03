@@ -11,7 +11,7 @@ class StoreRequest extends GasCylinderRequest
     {
         $rules = $this->getRules();
 
-        $rules['name'][] = Rule::unique('gas_cylinders', 'name')->where(fn(Builder $query) => $query->where('purchase_type', request()->purchase_type));
+        $rules['name'][] = Rule::unique('gas_cylinders', 'name');
 
         return $rules;
     }

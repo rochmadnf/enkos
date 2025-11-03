@@ -20,7 +20,6 @@ class GasCylinderController extends Controller
                 'description' => 'Menampilkan tabung yang sudah tersimpan di sistem.',
                 'breadcrumbs' => [['id' => 'gcbrc_001', 'href' => '#', 'label' => $pageName]],
             ],
-            'purchase_type' => \App\Enums\GasCylinder\PurchaseTypeEnum::toArray(),
         ]);
     }
 

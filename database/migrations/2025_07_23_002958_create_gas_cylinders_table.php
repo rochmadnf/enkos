@@ -10,7 +10,6 @@ return new class extends Migration {
         Schema::create('gas_cylinders', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('name');
-            $table->unsignedTinyInteger('purchase_type');
             $table->unsignedInteger('total_stock');
             $table->timestamps();
         });

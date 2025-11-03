@@ -12,14 +12,7 @@ class GasCylinder extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
-    protected $fillable = ['name', 'purchase_type', 'total_stock'];
-
-    protected function casts(): array
-    {
-        return [
-            'purchase_type' => \App\Enums\GasCylinder\PurchaseTypeEnum::class,
-        ];
-    }
+    protected $fillable = ['name', 'total_stock'];
 
     public function uniqueIds(): array
     {
