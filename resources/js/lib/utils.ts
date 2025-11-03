@@ -42,3 +42,7 @@ export function formatNumberShort(num: number): string {
     }
     return num.toString();
 }
+
+export function ThousandSeparatorID(num: number): string {
+    return num.toLocaleString('id-ID');
+}

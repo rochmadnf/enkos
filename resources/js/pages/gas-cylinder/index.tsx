@@ -2,14 +2,26 @@ import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import AppLayout from '@/layouts/app-layout';
+import { ThousandSeparatorID } from '@/lib/utils';
 import { PageDataProps } from '@/types';
+import { PaginationMetaProps } from '@/types/pagination';
 import { Head, usePage } from '@inertiajs/react';
 import { EllipsisIcon, FileSymlinkIcon, FunnelPlusIcon, SearchIcon } from 'lucide-react';
 import { CSSProperties, ReactNode } from 'react';
 import { ButtonAdd } from './partials/_btn-add';
 
+export type GasCylinderProps = {
+    id: string;
+    name: string;
+    total_stock: number;
+    create: string;
+};
+
 export default function GasCylinderIndex() {
-    const { page } = usePage<PageDataProps>().props;
+    const { page, gasCylinders: { data: rows, meta } = { data: [], meta: undefined } } = usePage<
+        PageDataProps & { gasCylinders: { data: GasCylinderProps[]; meta: PaginationMetaProps } | undefined }
+    >().props;
+
     return (
         <>
             <Head title="Tabung Gas">
@@ -98,16 +110,24 @@ export default function GasCylinderIndex() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr className="border-b border-app-primary-300 last:border-b-0">
-                                        <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">Refill 5.5Kg</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">34</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">100</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">4</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 text-center font-bold last:border-r-0">138</td>
-                                        <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">...</td>
-                                    </tr>
+                                    {rows.length === 0 ? (
+                                        <div>Kosong</div>
+                                    ) : (
+                                        rows.map((row) => (
+                                            <tr key={row.id} className="border-b border-app-primary-300 last:border-b-0">
+                                                <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">{row.name}</td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 text-right font-bold last:border-r-0">
+                                                    {ThousandSeparatorID(row.total_stock)}
+                                                </td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">...</td>
+                                            </tr>
+                                        ))
+                                    )}
                                 </tbody>
                             </table>
                         </div>
