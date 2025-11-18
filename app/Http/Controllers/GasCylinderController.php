@@ -13,14 +13,17 @@ class GasCylinderController extends Controller
 
     public function index(): InertiaResponse
     {
+        $perPage = request()->integer('per_page', 5);
+        $pageName = 'Tabung Gas';
+
         return inertia('gas-cylinder/index', [
             'page' => [
                 'uuid' => 'mni_002',
-                'name' => ($pageName = 'Tabung Gas'),
+                'name' => $pageName,
                 'description' => 'Menampilkan tabung yang sudah tersimpan di sistem.',
                 'breadcrumbs' => [['id' => 'gcbrc_001', 'href' => '#', 'label' => $pageName]],
             ],
-            'gasCylinders' => $this->gCylRepo->paginate(),
+            'gasCylinders' => $this->gCylRepo->paginate($perPage),
         ]);
     }
 
@@ -28,6 +31,13 @@ class GasCylinderController extends Controller
     {
         $this->gCylRepo->create($request->validated());
 
-        return to_route('gas_cylinder.index');
+        return to_route('gas_cylinder.index', request()->query());
+    }
+
+    public function destroy(string $id): RedirectResponse
+    {
+        $this->gCylRepo->delete($id);
+
+        return to_route('gas_cylinder.index', request()->query());
     }
 }

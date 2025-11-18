@@ -3,19 +3,21 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { router } from '@inertiajs/react';
-import { TrashIcon, TriangleAlertIcon } from 'lucide-react';
+import { Trash2Icon, TriangleAlertIcon } from 'lucide-react';
 import { Dispatch, SetStateAction, useState } from 'react';
 import toast from 'react-hot-toast';
 
 export interface DeleteButtonProps {
     url: string;
+    pageName?: string;
     onlyProps?: string[] | undefined;
     popSide?: 'top' | 'bottom' | 'left' | 'right' | undefined;
     popSideOffset?: number | undefined;
     title: string;
     description: string;
     selectedData: string;
-    variant?: 'flat' | undefined;
+    variant?: 'flat' | 'pill' | undefined;
+    className?: string;
 
     setPage?: Dispatch<SetStateAction<number>>;
 }
@@ -29,16 +31,22 @@ export function DeleteButton({
     description,
     selectedData,
     variant = 'flat',
+    pageName = 'Lokasi',
+    className,
     setPage,
 }: DeleteButtonProps) {
     const [openPop, setOpenPop] = useState<boolean>(false);
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
+    const baseStyles = cn(
+        'inline-flex cursor-pointer items-center justify-center bg-white transition duration-150 hover:border-destructive hover:bg-destructive hover:text-white [&_svg]:pointer-events-none',
+        className,
+        openPop ? 'border-destructive bg-destructive text-white' : '',
+    );
+
     const buttonVariant: Record<NonNullable<DeleteButtonProps['variant']>, string> = {
-        flat: cn(
-            `inline-flex cursor-pointer items-center justify-center bg-white transition duration-150 first:border-r first:border-r-app-primary-300 last:border-l last:border-l-app-primary-300 hover:bg-destructive hover:text-white [&_svg]:pointer-events-none [&_svg]:size-5`,
-            openPop ? 'bg-destructive text-white' : null,
-        ),
+        flat: cn('first:border-r first:border-r-app-primary-300 last:border-l last:border-l-app-primary-300 [&_svg]:size-5', baseStyles),
+        pill: cn('rounded-full border p-2 [&_svg]:size-4', baseStyles),
     };
 
     const deleteSelectedData = (name: string) => {
@@ -49,7 +57,7 @@ export function DeleteButton({
             only: onlyProps,
             onSuccess: () => {
                 setPage?.(Number(new URL(url).searchParams.get('page') ?? '1'));
-                toast.success(`Lokasi ${name} berhasil dihapus.`);
+                toast.success(`${pageName} ${name} berhasil dihapus.`);
             },
             onError: (err) => {
                 toast.error(err.message);
@@ -70,7 +78,7 @@ export function DeleteButton({
                             onMouseLeave={() => setIsHovered(false)}
                             className={buttonVariant[(variant ?? 'flat') as keyof typeof buttonVariant]}
                         >
-                            <TrashIcon />
+                            <Trash2Icon />
                         </button>
                     </PopoverTrigger>
                 </TooltipTrigger>

@@ -32,6 +32,8 @@ export function ButtonAdd() {
                 setOpen(false);
                 toast.success(`${form.data.name} berhasil ditambahkan.`);
             },
+            only: ['gasCylinders'],
+            preserveState: true,
         });
     };
 

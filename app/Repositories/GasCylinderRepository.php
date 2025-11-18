@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Repositories\Contracts\GasCylinderRepositoryInterface;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class GasCylinderRepository implements GasCylinderRepositoryInterface
 {
@@ -27,5 +28,23 @@ class GasCylinderRepository implements GasCylinderRepositoryInterface
                 $query->where('name', 'LIKE', '%' . request()->get('keyword') . '%');
             })->paginate(perPage: request()->has('per_page') ? request()->get('per_page') : $perPage),
         );
+    }
+
+    public function find(string $id)
+    {
+        $gasCylinder = GasCylinder::find($id);
+
+        if (!$gasCylinder) {
+            throw ValidationException::withMessages([
+                'message' => 'Data Tabung Gas tidak ditemukan.',
+            ]);
+        }
+
+        return $gasCylinder;
+    }
+
+    public function delete(string $id)
+    {
+        return $this->find($id)->delete();
     }
 }

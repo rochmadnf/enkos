@@ -1,13 +1,25 @@
+import { DeleteButton } from '@/components/form/delete-button';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { ThousandSeparatorID } from '@/lib/utils';
 import { PageDataProps } from '@/types';
 import { PaginationMetaProps } from '@/types/pagination';
 import { Head, usePage } from '@inertiajs/react';
-import { EllipsisIcon, FileSymlinkIcon, FunnelPlusIcon, SearchIcon } from 'lucide-react';
+import {
+    ChevronFirstIcon,
+    ChevronLastIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    EllipsisIcon,
+    FileSymlinkIcon,
+    FunnelPlusIcon,
+    SearchIcon,
+} from 'lucide-react';
 import { CSSProperties, ReactNode } from 'react';
+import { PER_PAGE_LIST, usePaginationState } from './lib/pagination';
 import { ButtonAdd } from './partials/_btn-add';
 
 export type GasCylinderProps = {
@@ -21,6 +33,8 @@ export default function GasCylinderIndex() {
     const { page, gasCylinders: { data: rows, meta } = { data: [], meta: undefined } } = usePage<
         PageDataProps & { gasCylinders: { data: GasCylinderProps[]; meta: PaginationMetaProps } | undefined }
     >().props;
+
+    const { pageState, perPageState, setPageState, setPerPageState, setShowDataPerpage, setCurrentPage } = usePaginationState(meta);
 
     return (
         <>
@@ -124,7 +138,29 @@ export default function GasCylinderIndex() {
                                                 <td className="border-r border-e-app-primary-300 p-2.5 text-right font-bold last:border-r-0">
                                                     {ThousandSeparatorID(row.total_stock)}
                                                 </td>
-                                                <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">...</td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">
+                                                    <div className="group w-full">
+                                                        <DeleteButton
+                                                            url={route('gas_cylinder.delete', {
+                                                                gas_id: row.id,
+                                                                page: [meta?.from, meta?.to].every((num) => num === meta?.from)
+                                                                    ? pageState > 1
+                                                                        ? pageState - 1
+                                                                        : 1
+                                                                    : pageState,
+                                                                per_page: perPageState,
+                                                            })}
+                                                            onlyProps={['gasCylinders']}
+                                                            selectedData={row.name}
+                                                            title="Hapus Tabung Gas"
+                                                            description={`Kamu akan menghapus tabung gas <strong className="font-bold! text-slate-950!">${row.name}</strong>.`}
+                                                            setPage={setPageState}
+                                                            pageName="Tabung Gas"
+                                                            variant="pill"
+                                                            className="border-app-primary-950/30 text-destructive"
+                                                        />
+                                                    </div>
+                                                </td>
                                             </tr>
                                         ))
                                     )}
@@ -133,6 +169,63 @@ export default function GasCylinderIndex() {
                         </div>
                     </div>
                     {/* pagination */}
+                    <div className="flex h-14 w-full items-center justify-between rounded-b-lg border border-app-primary-300 bg-white px-4">
+                        <h6 className="text-sm font-semibold">Total: {meta?.total ?? 0}</h6>
+                        {rows.length > 0 ? (
+                            <>
+                                <div className="flex flex-row items-center justify-center gap-x-2">
+                                    <Button size="icon" variant="ghost" disabled={1 === pageState} onClick={() => setCurrentPage(1)}>
+                                        <ChevronFirstIcon />
+                                    </Button>
+                                    <Button size="icon" variant="ghost" disabled={1 === pageState} onClick={() => setCurrentPage(pageState - 1)}>
+                                        <ChevronLeftIcon />
+                                    </Button>
+                                    <Select defaultValue={'1'} value={String(pageState)} onValueChange={(e) => setCurrentPage(Number(e))}>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Halaman" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {Array.from({ length: Math.ceil((meta?.total ?? 1) / perPageState) }, (_, i) => i + 1).map((link) => (
+                                                <SelectItem key={link} value={link.toString()}>
+                                                    {`Hal. ${link}`}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        disabled={meta?.last_page === pageState}
+                                        onClick={() => setCurrentPage(pageState + 1)}
+                                    >
+                                        <ChevronRightIcon />
+                                    </Button>
+                                    <Button
+                                        size="icon"
+                                        variant="ghost"
+                                        disabled={meta?.last_page === pageState}
+                                        onClick={() => setCurrentPage(meta?.last_page ?? 1)}
+                                    >
+                                        <ChevronLastIcon />
+                                    </Button>
+                                </div>
+
+                                <Select defaultValue={String(perPageState)} onValueChange={(e) => setShowDataPerpage(Number(e))}>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Data perhalaman" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {PER_PAGE_LIST.map((item) => (
+                                            <SelectItem key={item} value={item.toString()}>
+                                                {`${item.toString()} / Halaman`}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </>
+                        ) : null}
+                    </div>
                 </section>
             </div>
         </>
