@@ -43,6 +43,19 @@ class GasCylinderRepository implements GasCylinderRepositoryInterface
         return $gasCylinder;
     }
 
+    public function update(string $id, array $validated)
+    {
+        try {
+            return DB::transaction(function () use ($id, $validated) {
+                $gasCylinder = $this->find($id);
+                $gasCylinder->update($validated);
+                return $gasCylinder;
+            });
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
     public function delete(string $id)
     {
         return $this->find($id)->delete();

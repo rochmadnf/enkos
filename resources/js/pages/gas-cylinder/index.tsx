@@ -21,6 +21,7 @@ import {
 import { CSSProperties, ReactNode } from 'react';
 import { PER_PAGE_LIST, usePaginationState } from './lib/pagination';
 import { ButtonAdd } from './partials/_btn-add';
+import { ButtonEdit } from './partials/_btn-edit';
 
 export type GasCylinderProps = {
     id: string;
@@ -139,7 +140,8 @@ export default function GasCylinderIndex() {
                                                     {ThousandSeparatorID(row.total_stock)}
                                                 </td>
                                                 <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">
-                                                    <div className="group w-full">
+                                                    <div className="group flex-center flex w-full flex-row gap-x-2">
+                                                        <ButtonEdit data={row} pageState={pageState} perPageState={perPageState} />
                                                         <DeleteButton
                                                             url={route('gas_cylinder.delete', {
                                                                 gas_id: row.id,

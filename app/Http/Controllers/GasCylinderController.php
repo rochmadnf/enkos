@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\GasCylinder\StoreRequest;
+use App\Http\Requests\GasCylinder\{StoreRequest, UpdateRequest};
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response as InertiaResponse;
 
@@ -32,6 +32,12 @@ class GasCylinderController extends Controller
         $this->gCylRepo->create($request->validated());
 
         return to_route('gas_cylinder.index', request()->query());
+    }
+
+    public function update(UpdateRequest $request, string $id): RedirectResponse
+    {
+        $this->gCylRepo->update($id, $request->validated());
+        return to_route('gas_cylinder.index', request()->only(['keyword', 'page', 'per_page']));
     }
 
     public function destroy(string $id): RedirectResponse

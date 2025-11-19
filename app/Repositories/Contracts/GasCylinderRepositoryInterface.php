@@ -10,6 +10,8 @@ interface GasCylinderRepositoryInterface
 
     public function paginate(int $perPage = 10): JsonResource;
 
+    public function update(string $id, array $validated);
+
     public function delete(string $id);
 
     public function find(string $id);
