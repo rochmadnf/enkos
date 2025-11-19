@@ -157,7 +157,7 @@ export default function GasCylinderIndex() {
                                                             setPage={setPageState}
                                                             pageName="Tabung Gas"
                                                             variant="pill"
-                                                            className="border-app-primary-950/30 text-destructive"
+                                                            className="border-app-primary-300 text-destructive"
                                                         />
                                                     </div>
                                                 </td>
