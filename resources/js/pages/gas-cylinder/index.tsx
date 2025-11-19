@@ -1,7 +1,7 @@
+import { LoadingState } from '@/components/custom/loading-state';
 import { DeleteButton } from '@/components/form/delete-button';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { ThousandSeparatorID } from '@/lib/utils';
@@ -13,10 +13,10 @@ import {
     ChevronLastIcon,
     ChevronLeftIcon,
     ChevronRightIcon,
+    DatabaseIcon,
     EllipsisIcon,
     FileSymlinkIcon,
     FunnelPlusIcon,
-    SearchIcon,
 } from 'lucide-react';
 import { CSSProperties, ReactNode } from 'react';
 import { PER_PAGE_LIST, usePaginationState } from './lib/pagination';
@@ -35,7 +35,7 @@ export default function GasCylinderIndex() {
         PageDataProps & { gasCylinders: { data: GasCylinderProps[]; meta: PaginationMetaProps } | undefined }
     >().props;
 
-    const { pageState, perPageState, setPageState, setPerPageState, setShowDataPerpage, setCurrentPage } = usePaginationState(meta);
+    const { pageState, perPageState, setPageState, setShowDataPerpage, setCurrentPage, isLoading } = usePaginationState(meta);
 
     return (
         <>
@@ -52,8 +52,8 @@ export default function GasCylinderIndex() {
                 {/* content */}
                 <section className="rounded-lg border border-app-primary-300">
                     {/* search and add button + ... */}
-                    <div className="flex flex-row items-center justify-between border-b border-b-app-primary-300 p-4">
-                        <div className="relative">
+                    <div className="flex w-full flex-row items-center justify-end border-b border-b-app-primary-300 p-4">
+                        {/* <div className="relative">
                             <Input
                                 id="searchInput"
                                 className="peer border border-app-primary-300 ps-9.5 pe-9 text-app-primary-900 placeholder:text-app-primary-400/80 focus-within:text-app-primary-900 focus:text-app-primary-900 focus-visible:border-app-primary-500 focus-visible:text-app-primary-900 focus-visible:ring-app-primary-300/50"
@@ -63,7 +63,7 @@ export default function GasCylinderIndex() {
                             <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-app-primary-400/80 peer-not-placeholder-shown:text-app-primary-900 peer-placeholder-shown:text-app-primary-400/80 peer-disabled:opacity-50">
                                 <SearchIcon className="size-5" />
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="inline-flex -space-x-px rounded-md shadow-xs rtl:space-x-reverse">
                             <ButtonAdd />
@@ -104,7 +104,7 @@ export default function GasCylinderIndex() {
                                         <th colSpan={6} className="border-r border-b border-app-primary-300 py-2 text-center last:border-r-0">
                                             Stok
                                         </th>
-                                        <th rowSpan={2} className="border-r border-b border-app-primary-300 py-2 last:border-r-0">
+                                        <th rowSpan={2} className="w-15 border-r border-b border-app-primary-300 py-2 last:border-r-0">
                                             Aksi
                                         </th>
                                     </tr>
@@ -125,8 +125,24 @@ export default function GasCylinderIndex() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {rows.length === 0 ? (
-                                        <div>Kosong</div>
+                                    {isLoading ? (
+                                        <tr>
+                                            <td colSpan={8} className="py-12">
+                                                <div className="flex flex-col items-center justify-center gap-y-4 text-slate-900/70">
+                                                    <LoadingState className="size-20 fill-app-primary-500" />
+                                                    <span className="font-light text-app-primary-950">Memuat data...</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ) : rows.length === 0 ? (
+                                        <tr>
+                                            <td colSpan={8} className="py-12">
+                                                <div className="flex flex-col items-center justify-center gap-y-4 text-slate-900/70">
+                                                    <DatabaseIcon className="size-20 text-app-primary-950" />
+                                                    <span className="font-light text-app-primary-950">Belum ada data yang tersedia.</span>
+                                                </div>
+                                            </td>
+                                        </tr>
                                     ) : (
                                         rows.map((row) => (
                                             <tr key={row.id} className="border-b border-app-primary-300 last:border-b-0">

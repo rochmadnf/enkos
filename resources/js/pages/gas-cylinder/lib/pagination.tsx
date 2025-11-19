@@ -23,6 +23,7 @@ export const submitPagination = ({ page = 1, perPage = 5, keyword = null }: { pa
 export const usePaginationState = (meta: PaginationMetaProps | undefined) => {
     const [pageState, setPageState] = useState<number>(meta?.current_page ?? 1);
     const [perPageState, setPerPageState] = useState<number>(meta?.per_page ?? 5);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const setShowDataPerpage = (sum: number) => {
         const currentPage = sum > perPageState ? 1 : pageState;
@@ -46,5 +47,7 @@ export const usePaginationState = (meta: PaginationMetaProps | undefined) => {
         setPerPageState,
         setShowDataPerpage,
         setCurrentPage,
+        isLoading,
+        setIsLoading,
     };
 };
