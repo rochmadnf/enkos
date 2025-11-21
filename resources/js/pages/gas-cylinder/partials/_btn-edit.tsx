@@ -67,7 +67,7 @@ export function ButtonEdit({ data, pageState, perPageState }: ButtonEditProps) {
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
                             className={cn(
-                                'inline-flex cursor-pointer items-center justify-center rounded-full border border-app-primary-300 bg-white p-2 text-app-primary-900 transition duration-150 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950 data-[state=open]:border-amber-500 data-[state=open]:bg-amber-500 data-[state=open]:text-slate-950 [&_svg]:pointer-events-none [&_svg]:size-4',
+                                'inline-flex cursor-pointer items-center justify-center rounded-full border border-app-primary-300 bg-white p-2 text-amber-500 transition duration-150 hover:border-amber-500 hover:bg-amber-500 hover:text-slate-950 data-[state=open]:border-amber-500 data-[state=open]:bg-amber-500 data-[state=open]:text-slate-950 [&_svg]:pointer-events-none [&_svg]:size-4',
                                 open ? 'border-amber-500 bg-amber-500 text-slate-950' : '',
                             )}
                             disabled={open}
