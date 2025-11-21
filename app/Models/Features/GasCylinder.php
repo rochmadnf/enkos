@@ -18,4 +18,9 @@ class GasCylinder extends Model
     {
         return ['id'];
     }
+
+    public function histories()
+    {
+        return $this->hasMany(\App\Models\Features\GasCylinderHistory::class, 'gas_cylinder_id');
+    }
 }

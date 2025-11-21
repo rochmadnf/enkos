@@ -15,4 +15,10 @@ interface GasCylinderRepositoryInterface
     public function delete(string $id);
 
     public function find(string $id);
+
+    public function getStockByStatus(string $id, int $status): int;
+
+    public function getLocationStocks(string $id): array;
+
+    public function getPriceHistories(string $id): array;
 }

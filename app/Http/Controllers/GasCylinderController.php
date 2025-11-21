@@ -27,6 +27,37 @@ class GasCylinderController extends Controller
         ]);
     }
 
+    public function show(string $id): InertiaResponse
+    {
+        $gasCylinder = $this->gCylRepo->find($id);
+        $pageName = "Detail: {$gasCylinder->name}";
+
+        return inertia('gas-cylinder/show', [
+            'page' => [
+                'uuid' => 'mni_002_detail',
+                'name' => $pageName,
+                'description' => 'Detail informasi dan distribusi stok tabung gas.',
+                'breadcrumbs' => [
+                    ['id' => 'gcbrc_001', 'href' => route('gas_cylinder.index'), 'label' => 'Tabung Gas'],
+                    ['id' => 'gcbrc_002', 'href' => '#', 'label' => 'Detail'],
+                ],
+            ],
+            'gasCylinder' => [
+                'data' => [
+                    'id' => $gasCylinder->id,
+                    'name' => $gasCylinder->name,
+                    'total_stock' => $gasCylinder->total_stock,
+                    'stock_isi' => $this->gCylRepo->getStockByStatus($id, 1),
+                    'stock_kosong' => $this->gCylRepo->getStockByStatus($id, 2),
+                    'stock_bocor' => $this->gCylRepo->getStockByStatus($id, 3),
+                    'created_at' => $gasCylinder->created_at->format('d M Y H:i'),
+                ],
+            ],
+            'locationStocks' => $this->gCylRepo->getLocationStocks($id),
+            'priceHistories' => $this->gCylRepo->getPriceHistories($id),
+        ]);
+    }
+
     public function store(StoreRequest $request): RedirectResponse
     {
         $this->gCylRepo->create($request->validated());

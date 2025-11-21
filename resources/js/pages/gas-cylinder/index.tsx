@@ -3,6 +3,7 @@ import { DeleteButton } from '@/components/form/delete-button';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import AppLayout from '@/layouts/app-layout';
 import { ThousandSeparatorID } from '@/lib/utils';
 import { PageDataProps } from '@/types';
@@ -15,6 +16,7 @@ import {
     ChevronRightIcon,
     DatabaseIcon,
     EllipsisIcon,
+    EyeIcon,
     FileSymlinkIcon,
     FunnelPlusIcon,
 } from 'lucide-react';
@@ -157,6 +159,25 @@ export default function GasCylinderIndex() {
                                                 </td>
                                                 <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">
                                                     <div className="group flex-center flex w-full flex-row gap-x-2">
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger asChild>
+                                                                    <Button
+                                                                        asChild
+                                                                        size="icon"
+                                                                        variant="outline"
+                                                                        className="size-7 rounded-full border-app-primary-300 text-app-primary-950 hover:bg-app-primary-500 hover:text-white"
+                                                                    >
+                                                                        <a href={route('gas_cylinder.show', { gas_id: row.id })}>
+                                                                            <EyeIcon className="size-4" />
+                                                                        </a>
+                                                                    </Button>
+                                                                </TooltipTrigger>
+                                                                <TooltipContent>
+                                                                    <p>Lihat Detail</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
                                                         <ButtonEdit data={row} pageState={pageState} perPageState={perPageState} />
                                                         <DeleteButton
                                                             url={route('gas_cylinder.delete', {

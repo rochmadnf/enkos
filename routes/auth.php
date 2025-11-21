@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
         ->prefix('gas-cylinders')
         ->group(function () {
             Route::get('/', 'index')->name('gas_cylinder.index');
+            Route::get('/{gas_id}', 'show')->name('gas_cylinder.show');
             Route::post('/', 'store')->name('gas_cylinder.store');
             Route::patch('/{gas_id}', 'update')->name('gas_cylinder.update');
             Route::delete('/{gas_id}', 'destroy')->name('gas_cylinder.delete');

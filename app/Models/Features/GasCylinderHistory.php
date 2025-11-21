@@ -26,4 +26,14 @@ class GasCylinderHistory extends Model
             'id'
         ];
     }
+
+    public function gasCylinder()
+    {
+        return $this->belongsTo(\App\Models\Features\GasCylinder::class, 'gas_cylinder_id');
+    }
+
+    public function location()
+    {
+        return $this->belongsTo(\App\Models\GasLocation::class, 'location_id');
+    }
 }
