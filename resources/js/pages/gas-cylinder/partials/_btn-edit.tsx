@@ -1,10 +1,8 @@
+import { FormPopover } from '@/components/form/form-popover';
 import { FormInput } from '@/components/form/input';
-import { Button } from '@/components/ui/button';
-import { PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { useForm } from '@inertiajs/react';
-import { Popover } from '@radix-ui/react-popover';
 import { PencilIcon } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -58,11 +56,18 @@ export function ButtonEdit({ data, pageState, perPageState }: ButtonEditProps) {
         }
     };
 
+    const handleCancel = () => {
+        form.resetAndClearErrors();
+        setOpen(false);
+    };
+
     return (
-        <Popover open={open} onOpenChange={setOpen}>
-            <Tooltip open={isHovered && !open}>
-                <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
+        <FormPopover
+            open={open}
+            onOpenChange={setOpen}
+            trigger={
+                <Tooltip open={isHovered && !open}>
+                    <TooltipTrigger asChild>
                         <button
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
@@ -74,68 +79,42 @@ export function ButtonEdit({ data, pageState, perPageState }: ButtonEditProps) {
                         >
                             <PencilIcon />
                         </button>
-                    </PopoverTrigger>
-                </TooltipTrigger>
-                <TooltipContent>
-                    <p>Ubah Data</p>
-                </TooltipContent>
-            </Tooltip>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        <p>Ubah Data</p>
+                    </TooltipContent>
+                </Tooltip>
+            }
+            title="Edit Tabung Gas"
+            description="Perbarui informasi tabung gas."
+            onSubmit={updateGasCylinderType}
+            onCancel={handleCancel}
+            submitLabel="Ubah"
+            isProcessing={form.processing}
+            sideOffset={-35}
+        >
+            <FormInput
+                label="Nama Tabung"
+                tabIndex={1}
+                required
+                autoFocus
+                name="name"
+                value={form.data.name}
+                onChange={(e) => form.setData('name', e.target.value)}
+                error={form.errors.name}
+            />
 
-            <PopoverContent
-                onInteractOutside={(e) => e.preventDefault()}
-                onEscapeKeyDown={(e) => e.preventDefault()}
-                className="w-96 border-app-primary-300"
-                side="left"
-                // align="start"
-                sideOffset={-35}
-            >
-                <div className="mb-4 space-y-1">
-                    <h4 className="text-xl leading-none font-medium text-app-primary-950">Edit Tabung Gas</h4>
-                    <p className="text-sm text-muted-foreground">Perbarui informasi tabung gas.</p>
-                </div>
-                <form onSubmit={updateGasCylinderType} className="space-y-2">
-                    <FormInput
-                        label="Nama Tabung"
-                        tabIndex={1}
-                        required
-                        autoFocus
-                        name="name"
-                        value={form.data.name}
-                        onChange={(e) => form.setData('name', e.target.value)}
-                        error={form.errors.name}
-                    />
-
-                    <FormInput
-                        label="Total Stok"
-                        tabIndex={2}
-                        required
-                        type="number"
-                        min={1}
-                        name="total_stock"
-                        value={form.data.total_stock}
-                        onChange={(e) => form.setData('total_stock', e.target.valueAsNumber)}
-                        error={form.errors.total_stock}
-                    />
-
-                    <div className="flex justify-between gap-x-2">
-                        <Button type="submit" variant={'primary'} className="w-1/2" disabled={form.processing}>
-                            {form.processing ? 'Memperbarui...' : 'Ubah'}
-                        </Button>
-                        <Button
-                            className="w-1/2"
-                            type="button"
-                            variant="destructive"
-                            onClick={() => {
-                                form.resetAndClearErrors();
-                                setOpen(false);
-                            }}
-                            disabled={form.processing}
-                        >
-                            Batal
-                        </Button>
-                    </div>
-                </form>
-            </PopoverContent>
-        </Popover>
+            <FormInput
+                label="Total Stok"
+                tabIndex={2}
+                required
+                type="number"
+                min={1}
+                name="total_stock"
+                value={form.data.total_stock}
+                onChange={(e) => form.setData('total_stock', e.target.valueAsNumber)}
+                error={form.errors.total_stock}
+            />
+        </FormPopover>
     );
 }
