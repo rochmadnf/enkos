@@ -86,8 +86,6 @@ export function ButtonEdit({ data, pageState, perPageState }: ButtonEditProps) {
                 onEscapeKeyDown={(e) => e.preventDefault()}
                 className="w-96 border-app-primary-300"
                 side="left"
-                // align="start"
-                sideOffset={-35}
             >
                 <div className="mb-4 space-y-1">
                     <h4 className="text-xl leading-none font-medium text-app-primary-950">Edit Tabung Gas</h4>
