@@ -46,4 +46,13 @@ class GasCylinderController extends Controller
 
         return to_route('gas_cylinder.index', request()->query());
     }
+
+    public function show(string $id)
+    {
+        $gC = $this->gCylRepo->find($id);
+
+        return response()->json([
+            'data' => $gC
+        ]);
+    }
 }

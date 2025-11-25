@@ -1,4 +1,5 @@
 import { LoadingState } from '@/components/custom/loading-state';
+import { Tooltip } from '@/components/custom/tooltip';
 import { DeleteButton } from '@/components/form/delete-button';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
@@ -7,7 +8,7 @@ import AppLayout from '@/layouts/app-layout';
 import { ThousandSeparatorID } from '@/lib/utils';
 import { PageDataProps } from '@/types';
 import { PaginationMetaProps } from '@/types/pagination';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import {
     ChevronFirstIcon,
     ChevronLastIcon,
@@ -17,6 +18,7 @@ import {
     EllipsisIcon,
     FileSymlinkIcon,
     FunnelPlusIcon,
+    NotebookTextIcon,
 } from 'lucide-react';
 import { CSSProperties, ReactNode } from 'react';
 import { PER_PAGE_LIST, usePaginationState } from './lib/pagination';
@@ -157,6 +159,15 @@ export default function GasCylinderIndex() {
                                                 </td>
                                                 <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">
                                                     <div className="group flex-center flex w-full flex-row gap-x-2">
+                                                        <Tooltip label="Detail Data" side="left">
+                                                            <Link
+                                                                href={route('gas_cylinder.show', { gas_id: row.id })}
+                                                                prefetch
+                                                                className="inline-flex cursor-pointer items-center justify-center rounded-full border border-app-primary-300 bg-white p-2 text-blue-500 transition duration-150 hover:border-blue-500 hover:bg-blue-500 hover:text-white data-[state=open]:border-blue-500 data-[state=open]:bg-blue-500 data-[state=open]:text-white [&_svg]:pointer-events-none [&_svg]:size-4"
+                                                            >
+                                                                <NotebookTextIcon />
+                                                            </Link>
+                                                        </Tooltip>
                                                         <ButtonEdit data={row} pageState={pageState} perPageState={perPageState} />
                                                         <DeleteButton
                                                             url={route('gas_cylinder.delete', {
