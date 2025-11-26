@@ -49,10 +49,13 @@ class GasCylinderController extends Controller
 
     public function show(string $id)
     {
-        $gC = $this->gCylRepo->find($id);
+        $gC = $this->gCylRepo->find($id, true);
 
-        return response()->json([
-            'data' => $gC
+        return inertia('gas-cylinder/show', [
+            'page' => [
+                'uuid' => 'mni_002',
+            ],
+            'gasCylinder' => $gC,
         ]);
     }
 }

@@ -30,7 +30,7 @@ class GasCylinderRepository implements GasCylinderRepositoryInterface
         );
     }
 
-    public function find(string $id)
+    public function find(string $id, bool $wrap = false)
     {
         $gasCylinder = GasCylinder::find($id);
 
@@ -38,6 +38,10 @@ class GasCylinderRepository implements GasCylinderRepositoryInterface
             throw ValidationException::withMessages([
                 'message' => 'Data Tabung Gas tidak ditemukan.',
             ]);
+        }
+
+        if ($wrap) {
+            return GasCylinderResource::make($gasCylinder);
         }
 
         return $gasCylinder;

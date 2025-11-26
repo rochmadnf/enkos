@@ -24,13 +24,7 @@ import { CSSProperties, ReactNode } from 'react';
 import { PER_PAGE_LIST, usePaginationState } from './lib/pagination';
 import { ButtonAdd } from './partials/_btn-add';
 import { ButtonEdit } from './partials/_btn-edit';
-
-export type GasCylinderProps = {
-    id: string;
-    name: string;
-    total_stock: number;
-    create: string;
-};
+import { GasCylinderProps } from './types';
 
 export default function GasCylinderIndex() {
     const { page, gasCylinders: { data: rows, meta } = { data: [], meta: undefined } } = usePage<
