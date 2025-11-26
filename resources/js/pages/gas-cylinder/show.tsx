@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Head, Link, usePage } from '@inertiajs/react';
 import { ArrowLeftIcon } from 'lucide-react';
 import { ReactNode } from 'react';
+import { DataTable } from './components/datatable';
 import { StockCard } from './components/stock-card';
 import { GasCylinderProps } from './types';
 
@@ -40,6 +41,9 @@ export default function GasCylinderShow() {
                     <StockCard label="Kosong" stock={500} desc="Tabung kosong." variant={'none'} />
                     <StockCard label="Bocor/Rusak" stock={100} desc="Tabung rusak." variant={'broken'} />
                 </div>
+
+                {/* Datatable */}
+                <DataTable />
             </div>
         </>
     );
