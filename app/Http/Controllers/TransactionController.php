@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Transaction\StoreRequest;
+use App\Http\Requests\Transaction\{StoreRequest, UpdateRequest};
+use App\Http\Resources\Feature\TransactionResource;
 use App\Repositories\Contracts\{GasLocationRepositoryInterface, GasCylinderRepositoryInterface, TransactionRepositoryInterface};
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response as InertiaResponse;
@@ -24,7 +25,7 @@ class TransactionController extends Controller
 
         return inertia('transaction/index', [
             'page' => [
-                'uuid' => 'mni_003',
+                'uuid' => 'mni_004',
                 'name' => $pageName,
                 'description' => 'Menampilkan seluruh transaksi penjualan tabung gas.',
                 'breadcrumbs' => [['id' => 'trbrc_001', 'href' => '#', 'label' => $pageName]],
@@ -39,7 +40,7 @@ class TransactionController extends Controller
 
         return inertia('transaction/create', [
             'page' => [
-                'uuid' => 'mni_003',
+                'uuid' => 'mni_004',
                 'name' => $pageName,
                 'description' => 'Form untuk mencatat transaksi penjualan tabung gas.',
                 'breadcrumbs' => [
@@ -102,5 +103,58 @@ class TransactionController extends Controller
         })->get(['id', 'name']);
 
         return response()->json(['data' => $cylinders]);
+    }
+
+    public function edit(string $id): InertiaResponse
+    {
+        $transaction = $this->transactionRepo->find($id);
+
+        if (!$transaction) {
+            abort(404, 'Transaksi tidak ditemukan.');
+        }
+
+        $pageName = 'Edit Transaksi';
+
+        return inertia('transaction/edit', [
+            'page' => [
+                'uuid' => 'mni_004',
+                'name' => $pageName,
+                'description' => 'Form untuk mengubah transaksi penjualan tabung gas.',
+                'breadcrumbs' => [
+                    ['id' => 'trbrc_001', 'href' => route('transaction.index'), 'label' => 'Transaksi Kasir'],
+                    ['id' => 'trbrc_002', 'href' => '#', 'label' => $pageName],
+                ],
+            ],
+            'transaction' => (new TransactionResource($transaction))->resolve(),
+            'gasLocations' => $this->gLocRepo->paginate(100),
+            'purchaseTypes' => \App\Enums\GasCylinder\PurchaseTypeEnum::toArray(),
+            'priceTypes' => \App\Enums\Transaction\PriceTypeEnum::toArray(),
+        ]);
+    }
+
+    public function update(UpdateRequest $request, string $id): RedirectResponse
+    {
+        $transaction = $this->transactionRepo->find($id);
+
+        if (!$transaction) {
+            abort(404, 'Transaksi tidak ditemukan.');
+        }
+
+        $this->transactionRepo->update($id, $request->validated());
+
+        return to_route('transaction.index')->with('success', 'Transaksi berhasil diperbarui.');
+    }
+
+    public function destroy(string $id): RedirectResponse
+    {
+        $transaction = $this->transactionRepo->find($id);
+
+        if (!$transaction) {
+            abort(404, 'Transaksi tidak ditemukan.');
+        }
+
+        $this->transactionRepo->delete($id);
+
+        return to_route('transaction.index')->with('success', 'Transaksi berhasil dihapus dan stok dikembalikan.');
     }
 }

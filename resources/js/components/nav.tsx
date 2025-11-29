@@ -23,12 +23,7 @@ export function Nav() {
 export function Item({ href, title, isActive }: Omit<NavItemProps, 'refCallback'>) {
     return (
         <li data-active={isActive} className={cn('h-full border-r border-app-primary-300/70 px-2', isActive ? 'bg-app-primary-200/70' : '')}>
-            <Link
-                href={href}
-                prefetch
-                className="inline-flex h-full items-center gap-x-1.5 text-app-primary-950"
-                aria-current={isActive ? 'page' : undefined}
-            >
+            <Link href={href} className="inline-flex h-full items-center gap-x-1.5 text-app-primary-950" aria-current={isActive ? 'page' : undefined}>
                 {title}
             </Link>
         </li>

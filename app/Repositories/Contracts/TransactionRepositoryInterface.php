@@ -11,4 +11,8 @@ interface TransactionRepositoryInterface
     public function create(array $validated);
 
     public function find(string $id, bool $wrap = false);
+
+    public function update(string $id, array $validated);
+
+    public function delete(string $id);
 }

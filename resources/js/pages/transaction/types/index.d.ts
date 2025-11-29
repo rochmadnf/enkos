@@ -1,6 +1,8 @@
 export type TransactionProps = {
     id: string;
     transaction_date: string;
+    location_id: string;
+    gas_cylinder_id: string;
     location: {
         id: string;
         name: string;

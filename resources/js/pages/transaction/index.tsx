@@ -5,7 +5,7 @@ import { ThousandSeparatorID } from '@/lib/utils';
 import { PageDataProps } from '@/types';
 import { PaginationMetaProps } from '@/types/pagination';
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { ChevronFirstIcon, ChevronLastIcon, ChevronLeftIcon, ChevronRightIcon, PlusIcon } from 'lucide-react';
+import { ChevronFirstIcon, ChevronLastIcon, ChevronLeftIcon, ChevronRightIcon, EditIcon, PlusIcon, TrashIcon } from 'lucide-react';
 import { ReactNode, useState } from 'react';
 import { TransactionProps } from './types';
 
@@ -54,6 +54,17 @@ export default function TransactionIndex() {
         );
     };
 
+    const handleDelete = (id: string, transactionDate: string) => {
+        if (confirm(`Apakah Anda yakin ingin menghapus transaksi tanggal ${transactionDate}? Stok akan dikembalikan.`)) {
+            router.delete(route('transaction.destroy', id), {
+                preserveScroll: true,
+                onSuccess: () => {
+                    router.reload({ only: ['transactions'] });
+                },
+            });
+        }
+    };
+
     return (
         <>
             <Head title="Transaksi Kasir">
@@ -91,13 +102,14 @@ export default function TransactionIndex() {
                                         <th className="border-r border-app-primary-300 px-4 py-3 text-left">Tipe Harga</th>
                                         <th className="border-r border-app-primary-300 px-4 py-3 text-right">Jumlah</th>
                                         <th className="border-r border-app-primary-300 px-4 py-3 text-right">Harga Satuan</th>
-                                        <th className="px-4 py-3 text-right">Total Harga</th>
+                                        <th className="border-r border-app-primary-300 px-4 py-3 text-right">Total Harga</th>
+                                        <th className="px-4 py-3 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {isLoading ? (
                                         <tr>
-                                            <td colSpan={8} className="py-8 text-center">
+                                            <td colSpan={9} className="py-8 text-center">
                                                 <div className="flex items-center justify-center">
                                                     <div className="h-8 w-8 animate-spin rounded-full border-4 border-app-primary-200 border-t-app-primary-500"></div>
                                                 </div>
@@ -105,7 +117,7 @@ export default function TransactionIndex() {
                                         </tr>
                                     ) : rows.length === 0 ? (
                                         <tr>
-                                            <td colSpan={8} className="py-8 text-center text-app-primary-500">
+                                            <td colSpan={9} className="py-8 text-center text-app-primary-500">
                                                 Belum ada data transaksi
                                             </td>
                                         </tr>
@@ -115,7 +127,13 @@ export default function TransactionIndex() {
                                                 key={transaction.id}
                                                 className={`${index % 2 === 0 ? 'bg-white' : 'bg-app-primary-50'} transition-colors hover:bg-app-primary-100/50`}
                                             >
-                                                <td className="border-r border-app-primary-300 px-4 py-3">{transaction.transaction_date}</td>
+                                                <td className="border-r border-app-primary-300 px-4 py-3">
+                                                    {new Date(transaction.transaction_date).toLocaleDateString('id-ID', {
+                                                        day: '2-digit',
+                                                        month: '2-digit',
+                                                        year: 'numeric',
+                                                    })}
+                                                </td>
                                                 <td className="border-r border-app-primary-300 px-4 py-3">{transaction.location.name}</td>
                                                 <td className="border-r border-app-primary-300 px-4 py-3">{transaction.gas_cylinder.name}</td>
                                                 <td className="border-r border-app-primary-300 px-4 py-3">
@@ -144,8 +162,31 @@ export default function TransactionIndex() {
                                                 <td className="border-r border-app-primary-300 px-4 py-3 text-right">
                                                     Rp {ThousandSeparatorID(transaction.unit_price)}
                                                 </td>
-                                                <td className="px-4 py-3 text-right font-semibold">
+                                                <td className="border-r border-app-primary-300 px-4 py-3 text-right font-semibold">
                                                     Rp {ThousandSeparatorID(transaction.total_price)}
+                                                </td>
+                                                <td className="px-4 py-3">
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <Link href={route('transaction.edit', transaction.id)}>
+                                                            <Button
+                                                                size="sm"
+                                                                variant="outline"
+                                                                className="flex items-center gap-1 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                                                            >
+                                                                <EditIcon className="h-3 w-3" />
+                                                                Edit
+                                                            </Button>
+                                                        </Link>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            className="flex items-center gap-1 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                                            onClick={() => handleDelete(transaction.id, transaction.transaction_date)}
+                                                        >
+                                                            <TrashIcon className="h-3 w-3" />
+                                                            Hapus
+                                                        </Button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))
