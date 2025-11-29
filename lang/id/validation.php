@@ -79,7 +79,7 @@ return [
     'max' => [
         'array' => ':Attribute harus memiliki maksimal :max buah nilai.',
         'file' => ':Attribute berukuran maksimal :max kB.',
-        'numeric' => ':Attribute harus maksimal angka :max.',
+        'numeric' => ':Attribute maksimal :max.',
         'string' => ':Attribute tidak boleh lebih dari :max karakter.',
     ],
     // 'max_digits' => '',
