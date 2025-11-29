@@ -23,6 +23,7 @@ Route::middleware('auth')->group(function () {
     })->name('dashboard');
 
     require __DIR__ . '/features/gas-cylinder.php';
+    require __DIR__ . '/features/transaction.php';
 
     Route::controller(\App\Http\Controllers\GasLocationController::class)
         ->prefix('/gas-locations')

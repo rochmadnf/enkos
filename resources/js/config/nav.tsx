@@ -60,7 +60,7 @@ export const NAV_ITEMS: NavItem[] = [
     {
         uuid: 'mni_004',
         title: 'Transaksi',
-        href: route('cashier.index'),
+        href: route('transaction.index'),
         icon: ShoppingCart,
         permissions: [],
     },
