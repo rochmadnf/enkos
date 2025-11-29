@@ -124,292 +124,333 @@ export function DataTableShow({ selectedGasCylinder, gasLocations, conditionType
         setOpenEditDialog(false);
     };
 
+    // Menghitung estimasi pendapatan dari tabung kondisi Isi (status === 1)
+    const getRevenueEstimates = () => {
+        const filledHistories = histories.filter((h) => h.status === 1);
+
+        const totalCapital = filledHistories.reduce((sum, h) => sum + h.stock * h.capital_price, 0);
+        const totalBase = filledHistories.reduce((sum, h) => sum + h.stock * h.base_price, 0);
+        const totalRetail = filledHistories.reduce((sum, h) => sum + h.stock * h.retail_price, 0);
+
+        return {
+            capital: totalCapital,
+            base: totalBase,
+            retail: totalRetail,
+        };
+    };
+
+    const formatCurrency = (amount: number) => {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0,
+        }).format(amount);
+    };
+
     return (
         <div className="rounded-md border border-app-primary-300 py-4">
             {/* Header */}
-            <div className="flex w-full items-center justify-between border-b border-app-primary-300 px-6 pb-4">
-                {/* Select Information Detail */}
-                <Select defaultValue={selectedInfo} onValueChange={(value) => setSelectedInfo(value as 'location' | 'price')}>
-                    <SelectTrigger className="cursor-pointer border-app-primary-300 px-4 text-left hover:bg-app-primary-50 focus-visible:border-app-primary-500 focus-visible:ring-app-primary-300/50 data-[size=default]:h-14 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0 [&>svg]:hidden">
-                        <SelectValue placeholder="Pilih Informasi" />
-                    </SelectTrigger>
-                    <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
-                        <SelectItem value="price">
-                            <span className="flex items-center gap-2">
-                                <CoinsIcon className="pointer-events-none size-7 text-app-primary-950" />
-                                <span>
-                                    <span className="block font-medium text-app-primary-950">Harga</span>
-                                    <span className="mt-0.5 block text-xs text-app-primary-900/70">Daftar Harga Stock</span>
+            <div className="space-y-4 border-b border-app-primary-300 px-6 pb-4">
+                <div className="flex w-full items-center justify-between">
+                    {/* Select Information Detail */}
+                    <Select defaultValue={selectedInfo} onValueChange={(value) => setSelectedInfo(value as 'location' | 'price')}>
+                        <SelectTrigger className="cursor-pointer border-app-primary-300 px-4 text-left hover:bg-app-primary-50 focus-visible:border-app-primary-500 focus-visible:ring-app-primary-300/50 data-[size=default]:h-14 [&>span]:flex [&>span]:items-center [&>span]:gap-2 [&>span_img]:shrink-0 [&>svg]:hidden">
+                            <SelectValue placeholder="Pilih Informasi" />
+                        </SelectTrigger>
+                        <SelectContent className="[&_*[role=option]]:ps-2 [&_*[role=option]]:pe-8 [&_*[role=option]>span]:start-auto [&_*[role=option]>span]:end-2">
+                            <SelectItem value="price">
+                                <span className="flex items-center gap-2">
+                                    <CoinsIcon className="pointer-events-none size-7 text-app-primary-950" />
+                                    <span>
+                                        <span className="block font-medium text-app-primary-950">Harga</span>
+                                        <span className="mt-0.5 block text-xs text-app-primary-900/70">Daftar Harga Stock</span>
+                                    </span>
                                 </span>
-                            </span>
-                        </SelectItem>
-                        <SelectItem value="location">
-                            <span className="flex items-center gap-2">
-                                <MapPinHouseIcon className="pointer-events-none size-7 text-app-primary-950" />
-                                <span>
-                                    <span className="block font-medium text-app-primary-950">Lokasi</span>
-                                    <span className="mt-0.5 block text-xs text-app-primary-900/70">Daftar Lokasi Stock</span>
+                            </SelectItem>
+                            <SelectItem value="location">
+                                <span className="flex items-center gap-2">
+                                    <MapPinHouseIcon className="pointer-events-none size-7 text-app-primary-950" />
+                                    <span>
+                                        <span className="block font-medium text-app-primary-950">Lokasi</span>
+                                        <span className="mt-0.5 block text-xs text-app-primary-900/70">Daftar Lokasi Stock</span>
+                                    </span>
                                 </span>
-                            </span>
-                        </SelectItem>
-                    </SelectContent>
-                </Select>
+                            </SelectItem>
+                        </SelectContent>
+                    </Select>
 
-                {/* Button Add New Stock */}
-                <Dialog open={openFormDialog} onOpenChange={setOpenFormDialog}>
-                    <DialogTrigger asChild>
-                        <Button
-                            className="h-12 rounded-md border-app-primary-300 text-app-primary-900 shadow-none transition duration-300 hover:border-app-primary-500 hover:bg-app-primary-500 hover:text-white"
-                            variant="outline"
+                    {/* Button Add New Stock */}
+                    <Dialog open={openFormDialog} onOpenChange={setOpenFormDialog}>
+                        <DialogTrigger asChild>
+                            <Button
+                                className="h-12 rounded-md border-app-primary-300 text-app-primary-900 shadow-none transition duration-300 hover:border-app-primary-500 hover:bg-app-primary-500 hover:text-white"
+                                variant="outline"
+                            >
+                                <PackagePlusIcon className="-ms-1 size-6" aria-hidden="true" />
+                                Tambah
+                            </Button>
+                        </DialogTrigger>
+
+                        <DialogContent
+                            showCloseButton={false}
+                            onInteractOutside={(e) => {
+                                e.preventDefault();
+                            }}
+                            onEscapeKeyDown={canceledAddForm}
                         >
-                            <PackagePlusIcon className="-ms-1 size-6" aria-hidden="true" />
-                            Tambah
-                        </Button>
-                    </DialogTrigger>
-
-                    <DialogContent
-                        showCloseButton={false}
-                        onInteractOutside={(e) => {
-                            e.preventDefault();
-                        }}
-                        onEscapeKeyDown={canceledAddForm}
-                    >
-                        <div className="w-full max-w-md space-y-6 rounded-md bg-white pl-2">
-                            <div
-                                aria-hidden="true"
-                                className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full border border-app-primary-950 text-app-primary-950"
-                            >
-                                <PackagePlusIcon className="opacity-80" size={24} />
-                            </div>
-                            <DialogHeader>
-                                <DialogTitle className="text-center text-app-primary-950">Tambah Stok Tabung Gas</DialogTitle>
-                                <DialogDescription className="text-center text-app-primary-900/80">
-                                    Isi formulir berikut untuk menambahkan stok tabung gas baru.
-                                </DialogDescription>
-                            </DialogHeader>
-
-                            {/* Form Add Stock */}
-                            <form className="flex max-h-[520px] w-full flex-col gap-1 overflow-y-auto p-2 pr-4" onSubmit={addNewStock}>
-                                <FormSelect
-                                    label="Kondisi Tabung"
-                                    name="status"
-                                    required
-                                    value={addForm.data.status !== undefined ? addForm.data.status.toString() : undefined}
-                                    onValueChange={(e) => addForm.setData('status', parseInt(e))}
-                                    tabIndex={1}
-                                    error={addForm.errors.status}
+                            <div className="w-full max-w-md space-y-6 rounded-md bg-white pl-2">
+                                <div
+                                    aria-hidden="true"
+                                    className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full border border-app-primary-950 text-app-primary-950"
                                 >
-                                    {conditionTypes.map((opt) => (
-                                        <SelectItem key={opt.id} value={opt.id.toString()}>
-                                            {opt.name}
-                                        </SelectItem>
-                                    ))}
-                                </FormSelect>
-
-                                <FormSelect
-                                    label="Lokasi Tabung"
-                                    name="location_id"
-                                    required
-                                    value={addForm.data.location_id !== undefined ? addForm.data.location_id.toString() : undefined}
-                                    onValueChange={(e) => addForm.setData('location_id', e)}
-                                    tabIndex={2}
-                                    error={addForm.errors.location_id}
-                                >
-                                    {gasLocations.map((opt) => (
-                                        <SelectItem key={opt.id} value={opt.id.toString()}>
-                                            {opt.name}
-                                        </SelectItem>
-                                    ))}
-                                </FormSelect>
-
-                                <FormInput
-                                    label="Stok"
-                                    tabIndex={3}
-                                    required
-                                    type="number"
-                                    min={1}
-                                    name="stock"
-                                    value={addForm.data.stock}
-                                    onChange={(e) => addForm.setData('stock', e.target.valueAsNumber)}
-                                    error={addForm.errors.stock}
-                                />
-
-                                <FormInputPrice
-                                    label="Harga Modal"
-                                    tabIndex={4}
-                                    required
-                                    name="capital_price"
-                                    value={addForm.data.capital_price}
-                                    onChange={(e) => addForm.setData('capital_price', e !== undefined ? e : 0)}
-                                    error={addForm.errors.capital_price}
-                                />
-
-                                <FormInputPrice
-                                    label="Harga Pangkalan"
-                                    tabIndex={5}
-                                    required
-                                    name="base_price"
-                                    value={addForm.data.base_price}
-                                    onChange={(e) => addForm.setData('base_price', e !== undefined ? e : 0)}
-                                    error={addForm.errors.base_price}
-                                />
-
-                                <FormInputPrice
-                                    label="Harga Eceran"
-                                    tabIndex={6}
-                                    required
-                                    name="retail_price"
-                                    value={addForm.data.retail_price}
-                                    onChange={(e) => addForm.setData('retail_price', e !== undefined ? e : 0)}
-                                    error={addForm.errors.retail_price}
-                                />
-
-                                <div className="grid grid-cols-3 gap-3">
-                                    <Button
-                                        type="submit"
-                                        className="col-span-2 rounded-md bg-app-primary-600 text-white shadow-none transition duration-300 hover:bg-app-primary-700"
-                                        disabled={addForm.processing}
-                                        size={'full'}
-                                    >
-                                        Simpan
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="col-span-1 rounded-md border-app-primary-300 text-app-primary-900 shadow-none transition duration-300 hover:border-app-primary-500 hover:bg-app-primary-500 hover:text-white"
-                                        onClick={canceledAddForm}
-                                        size={'full'}
-                                    >
-                                        Batal
-                                    </Button>
+                                    <PackagePlusIcon className="opacity-80" size={24} />
                                 </div>
-                            </form>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                                <DialogHeader>
+                                    <DialogTitle className="text-center text-app-primary-950">Tambah Stok Tabung Gas</DialogTitle>
+                                    <DialogDescription className="text-center text-app-primary-900/80">
+                                        Isi formulir berikut untuk menambahkan stok tabung gas baru.
+                                    </DialogDescription>
+                                </DialogHeader>
 
-                {/* Dialog Edit Stock */}
-                <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
-                    <DialogContent
-                        showCloseButton={false}
-                        onInteractOutside={(e) => {
-                            e.preventDefault();
-                        }}
-                        onEscapeKeyDown={canceledEditForm}
-                    >
-                        <div className="w-full max-w-md space-y-6 rounded-md bg-white pl-2">
-                            <div
-                                aria-hidden="true"
-                                className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full border border-app-primary-950 text-app-primary-950"
-                            >
-                                <PencilIcon className="opacity-80" size={24} />
+                                {/* Form Add Stock */}
+                                <form className="flex max-h-[520px] w-full flex-col gap-1 overflow-y-auto p-2 pr-4" onSubmit={addNewStock}>
+                                    <FormSelect
+                                        label="Kondisi Tabung"
+                                        name="status"
+                                        required
+                                        value={addForm.data.status !== undefined ? addForm.data.status.toString() : undefined}
+                                        onValueChange={(e) => addForm.setData('status', parseInt(e))}
+                                        tabIndex={1}
+                                        error={addForm.errors.status}
+                                    >
+                                        {conditionTypes.map((opt) => (
+                                            <SelectItem key={opt.id} value={opt.id.toString()}>
+                                                {opt.name}
+                                            </SelectItem>
+                                        ))}
+                                    </FormSelect>
+
+                                    <FormSelect
+                                        label="Lokasi Tabung"
+                                        name="location_id"
+                                        required
+                                        value={addForm.data.location_id !== undefined ? addForm.data.location_id.toString() : undefined}
+                                        onValueChange={(e) => addForm.setData('location_id', e)}
+                                        tabIndex={2}
+                                        error={addForm.errors.location_id}
+                                    >
+                                        {gasLocations.map((opt) => (
+                                            <SelectItem key={opt.id} value={opt.id.toString()}>
+                                                {opt.name}
+                                            </SelectItem>
+                                        ))}
+                                    </FormSelect>
+
+                                    <FormInput
+                                        label="Stok"
+                                        tabIndex={3}
+                                        required
+                                        type="number"
+                                        min={1}
+                                        name="stock"
+                                        value={addForm.data.stock}
+                                        onChange={(e) => addForm.setData('stock', e.target.valueAsNumber)}
+                                        error={addForm.errors.stock}
+                                    />
+
+                                    <FormInputPrice
+                                        label="Harga Modal"
+                                        tabIndex={4}
+                                        required
+                                        name="capital_price"
+                                        value={addForm.data.capital_price}
+                                        onChange={(e) => addForm.setData('capital_price', e !== undefined ? e : 0)}
+                                        error={addForm.errors.capital_price}
+                                    />
+
+                                    <FormInputPrice
+                                        label="Harga Pangkalan"
+                                        tabIndex={5}
+                                        required
+                                        name="base_price"
+                                        value={addForm.data.base_price}
+                                        onChange={(e) => addForm.setData('base_price', e !== undefined ? e : 0)}
+                                        error={addForm.errors.base_price}
+                                    />
+
+                                    <FormInputPrice
+                                        label="Harga Eceran"
+                                        tabIndex={6}
+                                        required
+                                        name="retail_price"
+                                        value={addForm.data.retail_price}
+                                        onChange={(e) => addForm.setData('retail_price', e !== undefined ? e : 0)}
+                                        error={addForm.errors.retail_price}
+                                    />
+
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <Button
+                                            type="submit"
+                                            className="col-span-2 rounded-md bg-app-primary-600 text-white shadow-none transition duration-300 hover:bg-app-primary-700"
+                                            disabled={addForm.processing}
+                                            size={'full'}
+                                        >
+                                            Simpan
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="col-span-1 rounded-md border-app-primary-300 text-app-primary-900 shadow-none transition duration-300 hover:border-app-primary-500 hover:bg-app-primary-500 hover:text-white"
+                                            onClick={canceledAddForm}
+                                            size={'full'}
+                                        >
+                                            Batal
+                                        </Button>
+                                    </div>
+                                </form>
                             </div>
-                            <DialogHeader>
-                                <DialogTitle className="text-center text-app-primary-950">Edit Stok Tabung Gas</DialogTitle>
-                                <DialogDescription className="text-center text-app-primary-900/80">
-                                    Perbarui informasi stok tabung gas.
-                                </DialogDescription>
-                            </DialogHeader>
+                        </DialogContent>
+                    </Dialog>
 
-                            {/* Form Edit Stock */}
-                            <form className="flex max-h-[520px] w-full flex-col gap-1 overflow-y-auto p-2 pr-4" onSubmit={updateStock}>
-                                <FormSelect
-                                    label="Kondisi Tabung"
-                                    name="status"
-                                    required
-                                    value={editForm.data.status !== undefined ? editForm.data.status.toString() : undefined}
-                                    onValueChange={(e) => editForm.setData('status', parseInt(e))}
-                                    tabIndex={1}
-                                    error={editForm.errors.status}
+                    {/* Dialog Edit Stock */}
+                    <Dialog open={openEditDialog} onOpenChange={setOpenEditDialog}>
+                        <DialogContent
+                            showCloseButton={false}
+                            onInteractOutside={(e) => {
+                                e.preventDefault();
+                            }}
+                            onEscapeKeyDown={canceledEditForm}
+                        >
+                            <div className="w-full max-w-md space-y-6 rounded-md bg-white pl-2">
+                                <div
+                                    aria-hidden="true"
+                                    className="mx-auto flex size-12 shrink-0 items-center justify-center rounded-full border border-app-primary-950 text-app-primary-950"
                                 >
-                                    {conditionTypes.map((opt) => (
-                                        <SelectItem key={opt.id} value={opt.id.toString()}>
-                                            {opt.name}
-                                        </SelectItem>
-                                    ))}
-                                </FormSelect>
-
-                                <FormSelect
-                                    label="Lokasi Tabung"
-                                    name="location_id"
-                                    required
-                                    value={editForm.data.location_id !== undefined ? editForm.data.location_id.toString() : undefined}
-                                    onValueChange={(e) => editForm.setData('location_id', e)}
-                                    tabIndex={2}
-                                    error={editForm.errors.location_id}
-                                >
-                                    {gasLocations.map((opt) => (
-                                        <SelectItem key={opt.id} value={opt.id.toString()}>
-                                            {opt.name}
-                                        </SelectItem>
-                                    ))}
-                                </FormSelect>
-
-                                <FormInput
-                                    label="Stok"
-                                    tabIndex={3}
-                                    required
-                                    type="number"
-                                    min={1}
-                                    name="stock"
-                                    value={editForm.data.stock}
-                                    onChange={(e) => editForm.setData('stock', e.target.valueAsNumber)}
-                                    error={editForm.errors.stock}
-                                />
-
-                                <FormInputPrice
-                                    label="Harga Modal"
-                                    tabIndex={4}
-                                    required
-                                    name="capital_price"
-                                    value={editForm.data.capital_price}
-                                    onChange={(e) => editForm.setData('capital_price', e !== undefined ? e : 0)}
-                                    error={editForm.errors.capital_price}
-                                />
-
-                                <FormInputPrice
-                                    label="Harga Pangkalan"
-                                    tabIndex={5}
-                                    required
-                                    name="base_price"
-                                    value={editForm.data.base_price}
-                                    onChange={(e) => editForm.setData('base_price', e !== undefined ? e : 0)}
-                                    error={editForm.errors.base_price}
-                                />
-
-                                <FormInputPrice
-                                    label="Harga Eceran"
-                                    tabIndex={6}
-                                    required
-                                    name="retail_price"
-                                    value={editForm.data.retail_price}
-                                    onChange={(e) => editForm.setData('retail_price', e !== undefined ? e : 0)}
-                                    error={editForm.errors.retail_price}
-                                />
-
-                                <div className="grid grid-cols-3 gap-3">
-                                    <Button
-                                        type="submit"
-                                        className="col-span-2 rounded-md bg-app-primary-600 text-white shadow-none transition duration-300 hover:bg-app-primary-700"
-                                        disabled={editForm.processing}
-                                        size={'full'}
-                                    >
-                                        Perbarui
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        className="col-span-1 rounded-md border-app-primary-300 text-app-primary-900 shadow-none transition duration-300 hover:border-app-primary-500 hover:bg-app-primary-500 hover:text-white"
-                                        onClick={canceledEditForm}
-                                        size={'full'}
-                                    >
-                                        Batal
-                                    </Button>
+                                    <PencilIcon className="opacity-80" size={24} />
                                 </div>
-                            </form>
-                        </div>
-                    </DialogContent>
-                </Dialog>
+                                <DialogHeader>
+                                    <DialogTitle className="text-center text-app-primary-950">Edit Stok Tabung Gas</DialogTitle>
+                                    <DialogDescription className="text-center text-app-primary-900/80">
+                                        Perbarui informasi stok tabung gas.
+                                    </DialogDescription>
+                                </DialogHeader>
+
+                                {/* Form Edit Stock */}
+                                <form className="flex max-h-[520px] w-full flex-col gap-1 overflow-y-auto p-2 pr-4" onSubmit={updateStock}>
+                                    <FormSelect
+                                        label="Kondisi Tabung"
+                                        name="status"
+                                        required
+                                        value={editForm.data.status !== undefined ? editForm.data.status.toString() : undefined}
+                                        onValueChange={(e) => editForm.setData('status', parseInt(e))}
+                                        tabIndex={1}
+                                        error={editForm.errors.status}
+                                    >
+                                        {conditionTypes.map((opt) => (
+                                            <SelectItem key={opt.id} value={opt.id.toString()}>
+                                                {opt.name}
+                                            </SelectItem>
+                                        ))}
+                                    </FormSelect>
+
+                                    <FormSelect
+                                        label="Lokasi Tabung"
+                                        name="location_id"
+                                        required
+                                        value={editForm.data.location_id !== undefined ? editForm.data.location_id.toString() : undefined}
+                                        onValueChange={(e) => editForm.setData('location_id', e)}
+                                        tabIndex={2}
+                                        error={editForm.errors.location_id}
+                                    >
+                                        {gasLocations.map((opt) => (
+                                            <SelectItem key={opt.id} value={opt.id.toString()}>
+                                                {opt.name}
+                                            </SelectItem>
+                                        ))}
+                                    </FormSelect>
+
+                                    <FormInput
+                                        label="Stok"
+                                        tabIndex={3}
+                                        required
+                                        type="number"
+                                        min={1}
+                                        name="stock"
+                                        value={editForm.data.stock}
+                                        onChange={(e) => editForm.setData('stock', e.target.valueAsNumber)}
+                                        error={editForm.errors.stock}
+                                    />
+
+                                    <FormInputPrice
+                                        label="Harga Modal"
+                                        tabIndex={4}
+                                        required
+                                        name="capital_price"
+                                        value={editForm.data.capital_price}
+                                        onChange={(e) => editForm.setData('capital_price', e !== undefined ? e : 0)}
+                                        error={editForm.errors.capital_price}
+                                    />
+
+                                    <FormInputPrice
+                                        label="Harga Pangkalan"
+                                        tabIndex={5}
+                                        required
+                                        name="base_price"
+                                        value={editForm.data.base_price}
+                                        onChange={(e) => editForm.setData('base_price', e !== undefined ? e : 0)}
+                                        error={editForm.errors.base_price}
+                                    />
+
+                                    <FormInputPrice
+                                        label="Harga Eceran"
+                                        tabIndex={6}
+                                        required
+                                        name="retail_price"
+                                        value={editForm.data.retail_price}
+                                        onChange={(e) => editForm.setData('retail_price', e !== undefined ? e : 0)}
+                                        error={editForm.errors.retail_price}
+                                    />
+
+                                    <div className="grid grid-cols-3 gap-3">
+                                        <Button
+                                            type="submit"
+                                            className="col-span-2 rounded-md bg-app-primary-600 text-white shadow-none transition duration-300 hover:bg-app-primary-700"
+                                            disabled={editForm.processing}
+                                            size={'full'}
+                                        >
+                                            Perbarui
+                                        </Button>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="col-span-1 rounded-md border-app-primary-300 text-app-primary-900 shadow-none transition duration-300 hover:border-app-primary-500 hover:bg-app-primary-500 hover:text-white"
+                                            onClick={canceledEditForm}
+                                            size={'full'}
+                                        >
+                                            Batal
+                                        </Button>
+                                    </div>
+                                </form>
+                            </div>
+                        </DialogContent>
+                    </Dialog>
+                </div>
+
+                {/* Estimasi Pendapatan */}
+                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+                    <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                        <p className="text-xs font-medium text-green-700">Estimasi Pendapatan (Harga Modal)</p>
+                        <p className="mt-1 text-lg font-bold text-green-900">{formatCurrency(getRevenueEstimates().capital)}</p>
+                    </div>
+                    <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                        <p className="text-xs font-medium text-blue-700">Estimasi Pendapatan (Harga Pangkalan)</p>
+                        <p className="mt-1 text-lg font-bold text-blue-900">{formatCurrency(getRevenueEstimates().base)}</p>
+                    </div>
+                    <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
+                        <p className="text-xs font-medium text-purple-700">Estimasi Pendapatan (Harga Eceran)</p>
+                        <p className="mt-1 text-lg font-bold text-purple-900">{formatCurrency(getRevenueEstimates().retail)}</p>
+                    </div>
+                </div>
             </div>
 
             {/* Table Content */}
