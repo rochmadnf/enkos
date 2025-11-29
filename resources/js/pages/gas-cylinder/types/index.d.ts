@@ -1,5 +1,15 @@
 import { GasLocationDataProps } from '@/pages/gas-location/types';
 
+export type GasCylinderHistoryProps = {
+    id: string;
+    location_id: string;
+    capital_price: number;
+    base_price: number;
+    retail_price: number;
+    stock: number;
+    status: number;
+};
+
 export type GasCylinderProps = {
     id: string;
     name: string;
@@ -10,6 +20,7 @@ export type GasCylinderProps = {
         empty: number;
         damaged: number;
     };
+    histories: GasCylinderHistoryProps[];
     create: string;
 };
 
@@ -34,6 +45,7 @@ export type DataTableShowProps = {
     selectedGasCylinder: Pick<GasCylinderProps, 'id'>['id'] | undefined;
     gasLocations: Pick<GasLocationDataProps, 'id' | 'name'>[];
     conditionTypes: ConditionTypeOptions[];
+    histories: GasCylinderHistoryProps[];
 };
 
 export type ConditionTypeOptions = {

@@ -2,6 +2,7 @@
 
 namespace App\Models\Features;
 
+use App\Enums\GasCylinder\ConditionTypeEnum;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,10 +21,20 @@ class GasCylinderHistory extends Model
         'status', // isi, kosong, bocor/rusak
     ];
 
+    protected $keyType = 'string';
+    public $incrementing = false;
+
     public function uniqueIds(): array
     {
         return [
             'id'
+        ];
+    }
+
+    public function casts()
+    {
+        return [
+            'status' => ConditionTypeEnum::class,
         ];
     }
 }

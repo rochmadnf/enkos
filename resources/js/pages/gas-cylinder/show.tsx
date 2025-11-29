@@ -47,7 +47,12 @@ export default function GasCylinderShow() {
                 </div>
 
                 {/* Datatable */}
-                <DataTableShow selectedGasCylinder={detail?.id} gasLocations={gLocs} conditionTypes={conditionTypes} />
+                <DataTableShow
+                    selectedGasCylinder={detail?.id}
+                    gasLocations={gLocs}
+                    conditionTypes={conditionTypes}
+                    histories={detail?.histories || []}
+                />
             </div>
         </>
     );

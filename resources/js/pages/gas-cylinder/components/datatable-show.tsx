@@ -10,7 +10,7 @@ import { FormEventHandler, useState } from 'react';
 import toast from 'react-hot-toast';
 import { DataTableShowProps, FormValues } from '../types';
 
-export function DataTableShow({ selectedGasCylinder, gasLocations, conditionTypes }: DataTableShowProps) {
+export function DataTableShow({ selectedGasCylinder, gasLocations, conditionTypes, histories }: DataTableShowProps) {
     const [selectedInfo, setSelectedInfo] = useState<'location' | 'price'>('location');
     const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
 
@@ -214,7 +214,78 @@ export function DataTableShow({ selectedGasCylinder, gasLocations, conditionType
                 {selectedInfo === 'location' ? (
                     <div className="text-app-primary-900">Menampilkan data lokasi stok tabung gas.</div>
                 ) : (
-                    <div className="text-app-primary-900">Menampilkan data harga stok tabung gas.</div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm text-app-primary-900">
+                            <thead className="border-b border-app-primary-300 bg-app-primary-50 text-xs uppercase">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3">
+                                        No
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Lokasi
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Kondisi
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Stok
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Harga Modal
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Harga Pangkalan
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Harga Eceran
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {histories.length > 0 ? (
+                                    histories.map((history, index) => {
+                                        const location = gasLocations.find((loc) => loc.id === history.location_id);
+                                        const condition = conditionTypes.find((cond) => cond.id === history.status);
+                                        return (
+                                            <tr key={history.id} className="border-b border-app-primary-200 hover:bg-app-primary-50">
+                                                <td className="px-6 py-4">{index + 1}</td>
+                                                <td className="px-6 py-4">{location?.name || '-'}</td>
+                                                <td className="px-6 py-4">{condition?.name || '-'}</td>
+                                                <td className="px-6 py-4">{history.stock}</td>
+                                                <td className="px-6 py-4">
+                                                    {new Intl.NumberFormat('id-ID', {
+                                                        style: 'currency',
+                                                        currency: 'IDR',
+                                                        minimumFractionDigits: 0,
+                                                    }).format(history.capital_price)}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {new Intl.NumberFormat('id-ID', {
+                                                        style: 'currency',
+                                                        currency: 'IDR',
+                                                        minimumFractionDigits: 0,
+                                                    }).format(history.base_price)}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {new Intl.NumberFormat('id-ID', {
+                                                        style: 'currency',
+                                                        currency: 'IDR',
+                                                        minimumFractionDigits: 0,
+                                                    }).format(history.retail_price)}
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td colSpan={7} className="px-6 py-8 text-center text-app-primary-500">
+                                            Belum ada data harga yang tersedia.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 )}
             </div>
         </div>
