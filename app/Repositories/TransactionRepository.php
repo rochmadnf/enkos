@@ -48,27 +48,46 @@ class TransactionRepository implements TransactionRepositoryInterface
             // Logika berbeda untuk REFILL vs BELI UTUH
             if ($validated['purchase_type'] == \App\Enums\GasCylinder\PurchaseTypeEnum::REFILL->value) {
                 // REFILL: Kurangi stok ISI, tambah stok KOSONG
-                $filledHistory = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
+                $filledHistories = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
                     ->where('location_id', $validated['location_id'])
                     ->where('status', \App\Enums\GasCylinder\ConditionTypeEnum::FILLED)
                     ->where('stock', '>', 0)
-                    ->first();
+                    ->orderBy('created_at', 'asc') // FIFO: ambil yang paling lama dulu
+                    ->get();
 
-                if (!$filledHistory) {
+                if ($filledHistories->isEmpty()) {
                     throw ValidationException::withMessages([
                         'quantity' => 'Stok tabung isi tidak tersedia di lokasi ini.',
                     ]);
                 }
 
-                if ($filledHistory->stock < $validated['quantity']) {
+                $totalAvailableStock = $filledHistories->sum('stock');
+                if ($totalAvailableStock < $validated['quantity']) {
                     throw ValidationException::withMessages([
-                        'quantity' => 'Stok tabung isi tidak mencukupi. Stok tersedia: ' . $filledHistory->stock,
+                        'quantity' => 'Stok tabung isi tidak mencukupi. Stok tersedia: ' . $totalAvailableStock,
                     ]);
                 }
 
-                // Kurangi stok ISI
-                $filledHistory->stock -= $validated['quantity'];
-                $filledHistory->save();
+                // Kurangi stok ISI dari multiple histories jika perlu
+                $remainingQuantity = $validated['quantity'];
+                $priceForEmpty = null; // Simpan harga dari history pertama untuk stok kosong
+
+                foreach ($filledHistories as $history) {
+                    if ($remainingQuantity <= 0) break;
+
+                    if ($priceForEmpty === null) {
+                        $priceForEmpty = [
+                            'capital_price' => $history->capital_price,
+                            'base_price' => $history->base_price,
+                            'retail_price' => $history->retail_price,
+                        ];
+                    }
+
+                    $toDeduct = min($remainingQuantity, $history->stock);
+                    $history->stock -= $toDeduct;
+                    $history->save();
+                    $remainingQuantity -= $toDeduct;
+                }
 
                 // Tambah stok KOSONG (cari atau buat entry baru)
                 $emptyHistory = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
@@ -80,13 +99,13 @@ class TransactionRepository implements TransactionRepositoryInterface
                     $emptyHistory->stock += $validated['quantity'];
                     $emptyHistory->save();
                 } else {
-                    // Buat entry baru untuk stok KOSONG dengan harga dari stok ISI
+                    // Buat entry baru untuk stok KOSONG dengan harga dari stok ISI pertama
                     GasCylinderHistory::create([
                         'gas_cylinder_id' => $validated['gas_cylinder_id'],
                         'location_id' => $validated['location_id'],
-                        'capital_price' => $filledHistory->capital_price,
-                        'base_price' => $filledHistory->base_price,
-                        'retail_price' => $filledHistory->retail_price,
+                        'capital_price' => $priceForEmpty['capital_price'],
+                        'base_price' => $priceForEmpty['base_price'],
+                        'retail_price' => $priceForEmpty['retail_price'],
                         'stock' => $validated['quantity'],
                         'status' => \App\Enums\GasCylinder\ConditionTypeEnum::EMPTY,
                     ]);
@@ -99,21 +118,23 @@ class TransactionRepository implements TransactionRepositoryInterface
                     ]);
                 }
 
-                $filledHistory = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
+                $filledHistories = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
                     ->where('location_id', $validated['location_id'])
                     ->where('status', \App\Enums\GasCylinder\ConditionTypeEnum::FILLED)
                     ->where('stock', '>', 0)
-                    ->first();
+                    ->orderBy('created_at', 'asc') // FIFO: ambil yang paling lama dulu
+                    ->get();
 
-                if (!$filledHistory) {
+                if ($filledHistories->isEmpty()) {
                     throw ValidationException::withMessages([
                         'quantity' => 'Stok tabung isi tidak tersedia di lokasi ini.',
                     ]);
                 }
 
-                if ($filledHistory->stock < $validated['quantity']) {
+                $totalAvailableStock = $filledHistories->sum('stock');
+                if ($totalAvailableStock < $validated['quantity']) {
                     throw ValidationException::withMessages([
-                        'quantity' => 'Stok tabung isi tidak mencukupi. Stok tersedia: ' . $filledHistory->stock,
+                        'quantity' => 'Stok tabung isi tidak mencukupi. Stok tersedia: ' . $totalAvailableStock,
                     ]);
                 }
 
@@ -121,9 +142,16 @@ class TransactionRepository implements TransactionRepositoryInterface
                 $gasCylinder->total_stock -= $validated['quantity'];
                 $gasCylinder->save();
 
-                // Kurangi stok ISI di history
-                $filledHistory->stock -= $validated['quantity'];
-                $filledHistory->save();
+                // Kurangi stok ISI dari multiple histories jika perlu (FIFO)
+                $remainingQuantity = $validated['quantity'];
+                foreach ($filledHistories as $history) {
+                    if ($remainingQuantity <= 0) break;
+
+                    $toDeduct = min($remainingQuantity, $history->stock);
+                    $history->stock -= $toDeduct;
+                    $history->save();
+                    $remainingQuantity -= $toDeduct;
+                }
             }
 
             return $transaction;
@@ -259,26 +287,46 @@ class TransactionRepository implements TransactionRepositoryInterface
     {
         // Logika sama dengan create
         if ($validated['purchase_type'] == \App\Enums\GasCylinder\PurchaseTypeEnum::REFILL->value) {
-            $filledHistory = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
+            $filledHistories = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
                 ->where('location_id', $validated['location_id'])
                 ->where('status', \App\Enums\GasCylinder\ConditionTypeEnum::FILLED)
                 ->where('stock', '>', 0)
-                ->first();
+                ->orderBy('created_at', 'asc')
+                ->get();
 
-            if (!$filledHistory) {
+            if ($filledHistories->isEmpty()) {
                 throw ValidationException::withMessages([
                     'quantity' => 'Stok tabung isi tidak tersedia di lokasi ini.',
                 ]);
             }
 
-            if ($filledHistory->stock < $validated['quantity']) {
+            $totalAvailableStock = $filledHistories->sum('stock');
+            if ($totalAvailableStock < $validated['quantity']) {
                 throw ValidationException::withMessages([
-                    'quantity' => 'Stok tabung isi tidak mencukupi. Stok tersedia: ' . $filledHistory->stock,
+                    'quantity' => 'Stok tabung isi tidak mencukupi. Stok tersedia: ' . $totalAvailableStock,
                 ]);
             }
 
-            $filledHistory->stock -= $validated['quantity'];
-            $filledHistory->save();
+            // Kurangi stok ISI dari multiple histories jika perlu
+            $remainingQuantity = $validated['quantity'];
+            $priceForEmpty = null;
+
+            foreach ($filledHistories as $history) {
+                if ($remainingQuantity <= 0) break;
+
+                if ($priceForEmpty === null) {
+                    $priceForEmpty = [
+                        'capital_price' => $history->capital_price,
+                        'base_price' => $history->base_price,
+                        'retail_price' => $history->retail_price,
+                    ];
+                }
+
+                $toDeduct = min($remainingQuantity, $history->stock);
+                $history->stock -= $toDeduct;
+                $history->save();
+                $remainingQuantity -= $toDeduct;
+            }
 
             $emptyHistory = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
                 ->where('location_id', $validated['location_id'])
@@ -292,9 +340,9 @@ class TransactionRepository implements TransactionRepositoryInterface
                 GasCylinderHistory::create([
                     'gas_cylinder_id' => $validated['gas_cylinder_id'],
                     'location_id' => $validated['location_id'],
-                    'capital_price' => $filledHistory->capital_price,
-                    'base_price' => $filledHistory->base_price,
-                    'retail_price' => $filledHistory->retail_price,
+                    'capital_price' => $priceForEmpty['capital_price'],
+                    'base_price' => $priceForEmpty['base_price'],
+                    'retail_price' => $priceForEmpty['retail_price'],
                     'stock' => $validated['quantity'],
                     'status' => \App\Enums\GasCylinder\ConditionTypeEnum::EMPTY,
                 ]);
@@ -306,29 +354,39 @@ class TransactionRepository implements TransactionRepositoryInterface
                 ]);
             }
 
-            $filledHistory = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
+            $filledHistories = GasCylinderHistory::where('gas_cylinder_id', $validated['gas_cylinder_id'])
                 ->where('location_id', $validated['location_id'])
                 ->where('status', \App\Enums\GasCylinder\ConditionTypeEnum::FILLED)
                 ->where('stock', '>', 0)
-                ->first();
+                ->orderBy('created_at', 'asc')
+                ->get();
 
-            if (!$filledHistory) {
+            if ($filledHistories->isEmpty()) {
                 throw ValidationException::withMessages([
                     'quantity' => 'Stok tabung isi tidak tersedia di lokasi ini.',
                 ]);
             }
 
-            if ($filledHistory->stock < $validated['quantity']) {
+            $totalAvailableStock = $filledHistories->sum('stock');
+            if ($totalAvailableStock < $validated['quantity']) {
                 throw ValidationException::withMessages([
-                    'quantity' => 'Stok tabung isi tidak mencukupi. Stok tersedia: ' . $filledHistory->stock,
+                    'quantity' => 'Stok tabung isi tidak mencukupi. Stok tersedia: ' . $totalAvailableStock,
                 ]);
             }
 
             $gasCylinder->total_stock -= $validated['quantity'];
             $gasCylinder->save();
 
-            $filledHistory->stock -= $validated['quantity'];
-            $filledHistory->save();
+            // Kurangi stok ISI dari multiple histories jika perlu (FIFO)
+            $remainingQuantity = $validated['quantity'];
+            foreach ($filledHistories as $history) {
+                if ($remainingQuantity <= 0) break;
+
+                $toDeduct = min($remainingQuantity, $history->stock);
+                $history->stock -= $toDeduct;
+                $history->save();
+                $remainingQuantity -= $toDeduct;
+            }
         }
     }
 }

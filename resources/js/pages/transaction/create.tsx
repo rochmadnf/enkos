@@ -34,7 +34,6 @@ export default function TransactionCreate() {
 
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [maxStock, setMaxStock] = useState<number>(0);
-    const [availablePrices, setAvailablePrices] = useState<{ base: number; retail: number }>({ base: 0, retail: 0 });
     const [availableCylinders, setAvailableCylinders] = useState<GasCylinderOption[]>([]);
 
     // Update transaction_date when selectedDate changes
@@ -71,26 +70,42 @@ export default function TransactionCreate() {
                 .then((res) => res.json())
                 .then((result) => {
                     setMaxStock(result.stock || 0);
-                    setAvailablePrices({ base: result.base_price || 0, retail: result.retail_price || 0 });
                 })
                 .catch(() => {
                     setMaxStock(0);
-                    setAvailablePrices({ base: 0, retail: 0 });
                 });
         }
     }, [data.location_id, data.gas_cylinder_id]);
 
     // Calculate total price when quantity or price_type changes
     useEffect(() => {
-        if (data.quantity > 0 && data.price_type) {
-            const price = data.price_type === '1' ? availablePrices.base : availablePrices.retail;
+        if (data.location_id && data.gas_cylinder_id && data.quantity > 0 && data.price_type) {
+            fetch(
+                `/transactions/stock-info?location_id=${data.location_id}&gas_cylinder_id=${data.gas_cylinder_id}&quantity=${data.quantity}&price_type=${data.price_type}`,
+            )
+                .then((res) => res.json())
+                .then((result) => {
+                    setData((prev) => ({
+                        ...prev,
+                        unit_price: result.unit_price || 0,
+                        total_price: result.total_price || 0,
+                    }));
+                })
+                .catch(() => {
+                    setData((prev) => ({
+                        ...prev,
+                        unit_price: 0,
+                        total_price: 0,
+                    }));
+                });
+        } else {
             setData((prev) => ({
                 ...prev,
-                unit_price: price,
-                total_price: price * data.quantity,
+                unit_price: 0,
+                total_price: 0,
             }));
         }
-    }, [data.quantity, data.price_type, availablePrices]);
+    }, [data.location_id, data.gas_cylinder_id, data.quantity, data.price_type]);
 
     const handleSubmit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -104,7 +119,6 @@ export default function TransactionCreate() {
                 setSelectedDate(new Date());
                 setAvailableCylinders([]);
                 setMaxStock(0);
-                setAvailablePrices({ base: 0, retail: 0 });
                 toast.success('Transaksi berhasil disimpan.');
             },
         });

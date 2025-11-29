@@ -65,25 +65,60 @@ class TransactionController extends Controller
     {
         $locationId = request()->get('location_id');
         $gasCylinderId = request()->get('gas_cylinder_id');
+        $quantity = request()->get('quantity', 0);
+        $priceType = request()->get('price_type'); // 1 = base, 2 = retail
 
         if (!$locationId || !$gasCylinderId) {
-            return response()->json(['stock' => 0, 'base_price' => 0, 'retail_price' => 0]);
+            return response()->json(['stock' => 0, 'unit_price' => 0, 'total_price' => 0]);
         }
 
-        $history = \App\Models\Features\GasCylinderHistory::where('gas_cylinder_id', $gasCylinderId)
+        // Ambil semua history dengan status FILLED yang memiliki stok (urut FIFO)
+        $histories = \App\Models\Features\GasCylinderHistory::where('gas_cylinder_id', $gasCylinderId)
             ->where('location_id', $locationId)
             ->where('status', \App\Enums\GasCylinder\ConditionTypeEnum::FILLED)
             ->where('stock', '>', 0)
-            ->first();
+            ->orderBy('created_at', 'asc')
+            ->get();
 
-        if (!$history) {
-            return response()->json(['stock' => 0, 'base_price' => 0, 'retail_price' => 0]);
+        if ($histories->isEmpty()) {
+            return response()->json(['stock' => 0, 'unit_price' => 0, 'total_price' => 0]);
         }
 
+        // Total stok dari semua history
+        $totalStock = $histories->sum('stock');
+
+        // Jika quantity tidak diberikan atau 0, kembalikan stok saja
+        if (!$quantity || $quantity <= 0) {
+            return response()->json([
+                'stock' => $totalStock,
+                'unit_price' => 0,
+                'total_price' => 0,
+            ]);
+        }
+
+        // Hitung total harga berdasarkan FIFO dari multiple histories
+        $remainingQuantity = min($quantity, $totalStock);
+        $totalPrice = 0;
+        $processedQuantity = 0;
+
+        foreach ($histories as $history) {
+            if ($remainingQuantity <= 0) break;
+
+            $price = $priceType == '2' ? $history->retail_price : $history->base_price;
+            $toTake = min($remainingQuantity, $history->stock);
+
+            $totalPrice += $toTake * $price;
+            $processedQuantity += $toTake;
+            $remainingQuantity -= $toTake;
+        }
+
+        // Hitung unit price rata-rata
+        $unitPrice = $processedQuantity > 0 ? round($totalPrice / $processedQuantity) : 0;
+
         return response()->json([
-            'stock' => $history->stock,
-            'base_price' => $history->base_price,
-            'retail_price' => $history->retail_price,
+            'stock' => $totalStock,
+            'unit_price' => $unitPrice,
+            'total_price' => $totalPrice,
         ]);
     }
 
