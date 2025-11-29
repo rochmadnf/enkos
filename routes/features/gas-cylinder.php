@@ -15,5 +15,7 @@ Route::controller(\App\Http\Controllers\GasCylinderController::class)
 
         Route::prefix('/stock')->group(function () {
             Route::post('/add', 'addStock')->name('gas_cylinder.stock.add');
+            Route::patch('/{history_id}', 'updateStock')->name('gas_cylinder.stock.update');
+            Route::delete('/{history_id}', 'deleteStock')->name('gas_cylinder.stock.delete');
         });
     });

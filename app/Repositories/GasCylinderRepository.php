@@ -78,4 +78,43 @@ class GasCylinderRepository implements GasCylinderRepositoryInterface
             throw $th;
         }
     }
+
+    public function updateStock(string $historyId, array $validated)
+    {
+        try {
+            return DB::transaction(function () use ($historyId, $validated) {
+                $history = \App\Models\Features\GasCylinderHistory::find($historyId);
+
+                if (!$history) {
+                    throw ValidationException::withMessages([
+                        'message' => 'Data history stok tidak ditemukan.',
+                    ]);
+                }
+
+                $history->update(Arr::except($validated, ['gas_cylinder_id']));
+                return $history;
+            });
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
+
+    public function deleteStock(string $historyId)
+    {
+        try {
+            return DB::transaction(function () use ($historyId) {
+                $history = \App\Models\Features\GasCylinderHistory::find($historyId);
+
+                if (!$history) {
+                    throw ValidationException::withMessages([
+                        'message' => 'Data history stok tidak ditemukan.',
+                    ]);
+                }
+
+                return $history->delete();
+            });
+        } catch (\Throwable $th) {
+            throw $th;
+        }
+    }
 }

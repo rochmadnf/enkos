@@ -17,4 +17,8 @@ interface GasCylinderRepositoryInterface
     public function find(string $id, bool $wrap = false);
 
     public function addStock(array $validated);
+
+    public function updateStock(string $historyId, array $validated);
+
+    public function deleteStock(string $historyId);
 }

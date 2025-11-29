@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\GasCylinder\ConditionTypeEnum;
-use App\Http\Requests\GasCylinder\{AddStockRequest, StoreRequest, UpdateRequest};
+use App\Http\Requests\GasCylinder\{AddStockRequest, StoreRequest, UpdateRequest, UpdateStockRequest};
 use App\Repositories\Contracts\{GasLocationRepositoryInterface, GasCylinderRepositoryInterface};
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response as InertiaResponse;
@@ -70,6 +69,20 @@ class GasCylinderController extends Controller
     {
         $this->gCylRepo->addStock($request->validated());
 
-        return to_route('gas_cylinder.show', array_merge(['gas_id' => $request->validated()['gas_cylinder_id']]));
+        return to_route('gas_cylinder.show', array_merge(['uid' => $request->validated()['gas_cylinder_id']]));
+    }
+
+    public function updateStock(UpdateStockRequest $request, string $history_id): RedirectResponse
+    {
+        $this->gCylRepo->updateStock($history_id, $request->validated());
+
+        return to_route('gas_cylinder.show', array_merge(['uid' => $request->validated()['gas_cylinder_id']]));
+    }
+
+    public function deleteStock(string $history_id): RedirectResponse
+    {
+        $this->gCylRepo->deleteStock($history_id);
+
+        return back();
     }
 }

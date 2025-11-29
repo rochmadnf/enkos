@@ -16,7 +16,7 @@ export interface DeleteButtonProps {
     title: string;
     description: string;
     selectedData: string;
-    variant?: 'flat' | 'pill' | undefined;
+    variant?: 'flat' | 'pill' | 'rect' | undefined;
     className?: string;
 
     setPage?: Dispatch<SetStateAction<number>>;
@@ -47,6 +47,7 @@ export function DeleteButton({
     const buttonVariant: Record<NonNullable<DeleteButtonProps['variant']>, string> = {
         flat: cn('first:border-r first:border-r-app-primary-300 last:border-l last:border-l-app-primary-300 [&_svg]:size-5', baseStyles),
         pill: cn('rounded-full border p-2 [&_svg]:size-4', baseStyles),
+        rect: cn('rounded-md p-2 [&_svg]:size-5', baseStyles),
     };
 
     const deleteSelectedData = (name: string) => {
