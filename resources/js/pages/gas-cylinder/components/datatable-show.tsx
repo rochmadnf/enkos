@@ -14,6 +14,34 @@ export function DataTableShow({ selectedGasCylinder, gasLocations, conditionType
     const [selectedInfo, setSelectedInfo] = useState<'location' | 'price'>('location');
     const [openFormDialog, setOpenFormDialog] = useState<boolean>(false);
 
+    // Mengelompokkan stok berdasarkan lokasi
+    const getStockByLocation = () => {
+        const locationStocks = new Map<string, { filled: number; empty: number; damaged: number; total: number }>();
+
+        histories.forEach((history) => {
+            const existing = locationStocks.get(history.location_id) || { filled: 0, empty: 0, damaged: 0, total: 0 };
+
+            if (history.status === 1) {
+                // Isi
+                existing.filled += history.stock;
+            } else if (history.status === 0) {
+                // Kosong
+                existing.empty += history.stock;
+            } else if (history.status === 2) {
+                // Rusak
+                existing.damaged += history.stock;
+            }
+            existing.total += history.stock;
+
+            locationStocks.set(history.location_id, existing);
+        });
+
+        return Array.from(locationStocks.entries()).map(([locationId, stocks]) => ({
+            locationId,
+            ...stocks,
+        }));
+    };
+
     const addForm = useForm<FormValues>({
         gas_cylinder_id: selectedGasCylinder,
         stock: 1,
@@ -212,7 +240,71 @@ export function DataTableShow({ selectedGasCylinder, gasLocations, conditionType
             {/* Table Content */}
             <div className="px-6 py-4">
                 {selectedInfo === 'location' ? (
-                    <div className="text-app-primary-900">Menampilkan data lokasi stok tabung gas.</div>
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left text-sm text-app-primary-900">
+                            <thead className="border-b border-app-primary-300 bg-app-primary-50 text-xs uppercase">
+                                <tr>
+                                    <th scope="col" className="px-6 py-3">
+                                        No
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Lokasi
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Isi
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Kosong
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Rusak
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Total Stok
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {getStockByLocation().length > 0 ? (
+                                    getStockByLocation().map((locationStock, index) => {
+                                        const location = gasLocations.find((loc) => loc.id === locationStock.locationId);
+                                        return (
+                                            <tr key={locationStock.locationId} className="border-b border-app-primary-200 hover:bg-app-primary-50">
+                                                <td className="px-6 py-4">{index + 1}</td>
+                                                <td className="px-6 py-4 font-medium">{location?.name || '-'}</td>
+                                                <td className="px-6 py-4">
+                                                    <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
+                                                        {locationStock.filled}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">
+                                                        {locationStock.empty}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">
+                                                        {locationStock.damaged}
+                                                    </span>
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
+                                                        {locationStock.total}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="px-6 py-8 text-center text-app-primary-500">
+                                            Belum ada data stok yang tersedia.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 ) : (
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-sm text-app-primary-900">
