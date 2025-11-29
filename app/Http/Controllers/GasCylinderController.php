@@ -2,14 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\GasCylinder\{StoreRequest, UpdateRequest};
+use App\Enums\GasCylinder\ConditionTypeEnum;
+use App\Http\Requests\GasCylinder\{AddStockRequest, StoreRequest, UpdateRequest};
+use App\Repositories\Contracts\{GasLocationRepositoryInterface, GasCylinderRepositoryInterface};
 use Illuminate\Http\RedirectResponse;
 use Inertia\Response as InertiaResponse;
 
 class GasCylinderController extends Controller
 {
 
-    public function __construct(protected readonly \App\Repositories\Contracts\GasCylinderRepositoryInterface $gCylRepo) {}
+    public function __construct(protected readonly GasCylinderRepositoryInterface $gCylRepo, protected readonly GasLocationRepositoryInterface $gLocRepo)
+    {
+        //
+    }
 
     public function index(): InertiaResponse
     {
@@ -47,15 +52,24 @@ class GasCylinderController extends Controller
         return to_route('gas_cylinder.index', request()->query());
     }
 
-    public function show(string $id)
+    public function show()
     {
-        $gC = $this->gCylRepo->find($id, true);
+        $gC = $this->gCylRepo->find(request()->get('uid'), true);
 
         return inertia('gas-cylinder/show', [
             'page' => [
                 'uuid' => 'mni_002',
             ],
             'gasCylinder' => $gC,
+            'gasLocations' => $this->gLocRepo->paginate(25),
+            'conditionTypes' => \App\Enums\GasCylinder\ConditionTypeEnum::toArray(),
         ]);
+    }
+
+    public function addStock(AddStockRequest $request): RedirectResponse
+    {
+        $this->gCylRepo->addStock($request->validated());
+
+        return to_route('gas_cylinder.show', array_merge(['gas_id' => $request->validated()['gas_cylinder_id']]));
     }
 }

@@ -4,7 +4,7 @@ namespace App\Repositories\Contracts;
 
 interface GasLocationRepositoryInterface
 {
-    public function paginate();
+    public function paginate(int $perPage = 8);
 
     public function find(string $id);
 

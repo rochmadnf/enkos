@@ -7,6 +7,7 @@ use App\Models\Features\GasCylinder;
 use Illuminate\Database\Eloquent\Builder;
 use App\Repositories\Contracts\GasCylinderRepositoryInterface;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -63,5 +64,18 @@ class GasCylinderRepository implements GasCylinderRepositoryInterface
     public function delete(string $id)
     {
         return $this->find($id)->delete();
+    }
+
+    public function addStock(array $validated)
+    {
+        try {
+            return DB::transaction(function () use ($validated) {
+                $gasCylinder = $this->find($validated['gas_cylinder_id']);
+                $gasCylinder->histories()->create(Arr::except($validated, ['gas_cylinder_id']));
+                return $gasCylinder;
+            });
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }

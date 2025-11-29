@@ -24,12 +24,12 @@ class GasLocationRepository implements GasLocationRepositoryInterface
         return $gasLocation;
     }
 
-    public function paginate()
+    public function paginate(int $perPage = 8)
     {
         return GasLocationResource::collection(
             GasLocation::when(request()->has('keyword') && request()->get('keyword'), function (Builder $query) {
                 $query->where('name', 'LIKE', '%' . request()->get('keyword') . '%');
-            })->paginate(perPage: request()->has('per_page') ? request()->get('per_page') : 8),
+            })->paginate(perPage: request()->has('per_page') ? request()->get('per_page') : $perPage),
         );
     }
 

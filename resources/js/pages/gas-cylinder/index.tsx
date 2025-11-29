@@ -155,7 +155,7 @@ export default function GasCylinderIndex() {
                                                     <div className="group flex-center flex w-full flex-row gap-x-2">
                                                         <Tooltip label="Detail Data" side="left">
                                                             <Link
-                                                                href={route('gas_cylinder.show', { gas_id: row.id })}
+                                                                href={route('gas_cylinder.show', { uid: row.id })}
                                                                 prefetch
                                                                 className="inline-flex cursor-pointer items-center justify-center rounded-full border border-app-primary-300 bg-white p-2 text-blue-500 transition duration-150 hover:border-blue-500 hover:bg-blue-500 hover:text-white data-[state=open]:border-blue-500 data-[state=open]:bg-blue-500 data-[state=open]:text-white [&_svg]:pointer-events-none [&_svg]:size-4"
                                                             >

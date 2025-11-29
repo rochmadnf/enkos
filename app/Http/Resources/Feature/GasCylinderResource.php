@@ -18,6 +18,12 @@ class GasCylinderResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'total_stock' => $this->total_stock,
+            'stock' => [
+                'all_condition' => $this->all_condition_stock,
+                'filled' => $this->filled_stock,
+                'empty' => $this->empty_stock,
+                'damaged' => $this->damaged_stock,
+            ],
             'create' => $this->created_at->translatedFormat('l, d F Y'),
         ];
     }

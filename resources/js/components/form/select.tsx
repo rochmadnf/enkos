@@ -7,7 +7,6 @@ import { InputErrorMessage } from '../input-error-message';
 import { Label } from '../ui/label';
 
 export type FormSelectProps = {
-    name: string;
     label: string;
     error?: string | undefined;
     triggerSize?: VariantProps<typeof selectVariants>['isize'];
@@ -15,7 +14,6 @@ export type FormSelectProps = {
     tabIndex?: number | undefined;
 } & ComponentProps<typeof SelectPrimitive.Root>;
 export function FormSelect({
-    name,
     label,
     error,
     triggerSize = 'md',
@@ -26,7 +24,7 @@ export function FormSelect({
 }: PropsWithChildren<FormSelectProps>) {
     return (
         <div className="w-full">
-            <Label htmlFor={name} className="text-[15px] leading-4">
+            <Label htmlFor={props.name} className="text-[15px] leading-4">
                 {label} {props.required ? <span className="text-red-500">*</span> : null}
             </Label>
             <Select {...props}>
