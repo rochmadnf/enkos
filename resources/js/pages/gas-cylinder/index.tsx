@@ -97,7 +97,7 @@ export default function GasCylinderIndex() {
                                         <th rowSpan={2} className="border-r border-app-primary-300 py-2 last:border-r-0">
                                             Nama Tabung
                                         </th>
-                                        <th colSpan={6} className="border-r border-b border-app-primary-300 py-2 text-center last:border-r-0">
+                                        <th colSpan={4} className="border-r border-b border-app-primary-300 py-2 text-center last:border-r-0">
                                             Stok
                                         </th>
                                         <th rowSpan={2} className="w-15 border-r border-b border-app-primary-300 py-2 last:border-r-0">
@@ -115,15 +115,13 @@ export default function GasCylinderIndex() {
                                         <th className="w-(--th-width) border-r border-app-primary-300 py-2">Isi</th>
                                         <th className="w-(--th-width) border-r border-app-primary-300 py-2">Kosong</th>
                                         <th className="w-(--th-width) border-r border-app-primary-300 py-2">Bocor</th>
-                                        <th className="w-(--th-width) border-r border-app-primary-300 py-2">Pinjam</th>
-                                        <th className="w-(--th-width) border-r border-app-primary-300 py-2">Dipinjam</th>
                                         <th className="w-(--th-width) border-r border-app-primary-300 py-2">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {isLoading ? (
                                         <tr>
-                                            <td colSpan={8} className="py-12">
+                                            <td colSpan={6} className="py-12">
                                                 <div className="flex flex-col items-center justify-center gap-y-4 text-slate-900/70">
                                                     <LoadingState className="size-20 fill-app-primary-500" />
                                                     <span className="font-light text-app-primary-950">Memuat data...</span>
@@ -132,7 +130,7 @@ export default function GasCylinderIndex() {
                                         </tr>
                                     ) : rows.length === 0 ? (
                                         <tr>
-                                            <td colSpan={8} className="py-12">
+                                            <td colSpan={6} className="py-12">
                                                 <div className="flex flex-col items-center justify-center gap-y-4 text-slate-900/70">
                                                     <DatabaseIcon className="size-20 text-app-primary-950" />
                                                     <span className="font-light text-app-primary-950">Belum ada data yang tersedia.</span>
@@ -143,11 +141,15 @@ export default function GasCylinderIndex() {
                                         rows.map((row) => (
                                             <tr key={row.id} className="border-b border-app-primary-300 last:border-b-0">
                                                 <td className="border-r border-e-app-primary-300 p-2.5 last:border-r-0">{row.name}</td>
-                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
-                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
-                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
-                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
-                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">0</td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">
+                                                    {ThousandSeparatorID(row.stock.filled)}
+                                                </td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">
+                                                    {ThousandSeparatorID(row.stock.empty)}
+                                                </td>
+                                                <td className="border-r border-e-app-primary-300 p-2.5 text-center last:border-r-0">
+                                                    {ThousandSeparatorID(row.stock.damaged)}
+                                                </td>
                                                 <td className="border-r border-e-app-primary-300 p-2.5 text-right font-bold last:border-r-0">
                                                     {ThousandSeparatorID(row.total_stock)}
                                                 </td>
