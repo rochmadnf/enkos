@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useForm } from '@inertiajs/react';
-import { CoinsIcon, MapPinHouseIcon, PackagePlusIcon, PencilIcon } from 'lucide-react';
+import { BanknoteArrowDownIcon, BanknoteIcon, BanknoteXIcon, CoinsIcon, MapPinHouseIcon, PackagePlusIcon, PencilIcon } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 import toast from 'react-hot-toast';
 import { DataTableShowProps, FormValues, GasCylinderHistoryProps } from '../types';
@@ -69,6 +69,8 @@ export function DataTableShow({ selectedGasCylinder, gasLocations, conditionType
         e.preventDefault();
 
         addForm.post(route('gas_cylinder.stock.add'), {
+            preserveScroll: true,
+            preserveState: true,
             onError: (err) => {
                 toast.error('Terdapat kesalahan pada pengisian formulir.');
             },
@@ -131,6 +133,36 @@ export function DataTableShow({ selectedGasCylinder, gasLocations, conditionType
         const totalCapital = filledHistories.reduce((sum, h) => sum + h.stock * h.capital_price, 0);
         const totalBase = filledHistories.reduce((sum, h) => sum + h.stock * h.base_price, 0);
         const totalRetail = filledHistories.reduce((sum, h) => sum + h.stock * h.retail_price, 0);
+
+        return {
+            capital: totalCapital,
+            base: totalBase,
+            retail: totalRetail,
+        };
+    };
+
+    // Menghitung pendapatan saat ini dari tabung kondisi Kosong (status === 0)
+    const getCurrentRevenue = () => {
+        const emptyHistories = histories.filter((h) => h.status === 0);
+
+        const totalCapital = emptyHistories.reduce((sum, h) => sum + h.stock * h.capital_price, 0);
+        const totalBase = emptyHistories.reduce((sum, h) => sum + h.stock * h.base_price, 0);
+        const totalRetail = emptyHistories.reduce((sum, h) => sum + h.stock * h.retail_price, 0);
+
+        return {
+            capital: totalCapital,
+            base: totalBase,
+            retail: totalRetail,
+        };
+    };
+
+    // Menghitung kerugian dari tabung kondisi Rusak (status === 2)
+    const getLostRevenue = () => {
+        const damagedHistories = histories.filter((h) => h.status === 2);
+
+        const totalCapital = damagedHistories.reduce((sum, h) => sum + h.stock * h.capital_price, 0);
+        const totalBase = damagedHistories.reduce((sum, h) => sum + h.stock * h.base_price, 0);
+        const totalRetail = damagedHistories.reduce((sum, h) => sum + h.stock * h.retail_price, 0);
 
         return {
             capital: totalCapital,
@@ -436,19 +468,81 @@ export function DataTableShow({ selectedGasCylinder, gasLocations, conditionType
                     </Dialog>
                 </div>
 
-                {/* Estimasi Pendapatan */}
-                <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
-                    <div className="rounded-lg border border-green-200 bg-green-50 p-4">
-                        <p className="text-xs font-medium text-green-700">Estimasi Pendapatan (Harga Modal)</p>
-                        <p className="mt-1 text-lg font-bold text-green-900">{formatCurrency(getRevenueEstimates().capital)}</p>
+                {/* Revenue Info */}
+                <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+                    {/* Estimasi Pendapatan */}
+                    <div className="rounded-lg border border-blue-300 bg-white p-5 shadow-sm">
+                        <div className="mb-3 flex items-center gap-2">
+                            <div className="rounded-full bg-blue-100 p-2">
+                                <BanknoteIcon className="size-4 text-blue-600" />
+                            </div>
+                            <h3 className="text-sm font-semibold text-gray-800">Estimasi Pendapatan Tersisa</h3>
+                        </div>
+                        {/* <p className="mb-3 text-xs text-gray-500">Tabung dengan kondisi ISI</p> */}
+                        <div className="space-y-2.5">
+                            <div className="flex items-center justify-between rounded-md bg-blue-50 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-600">Modal</span>
+                                <span className="text-sm font-bold text-blue-700">{formatCurrency(getRevenueEstimates().capital)}</span>
+                            </div>
+                            <div className="flex items-center justify-between rounded-md bg-blue-50 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-600">Pangkalan</span>
+                                <span className="text-sm font-bold text-blue-700">{formatCurrency(getRevenueEstimates().base)}</span>
+                            </div>
+                            <div className="flex items-center justify-between rounded-md bg-blue-50 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-600">Eceran</span>
+                                <span className="text-sm font-bold text-blue-700">{formatCurrency(getRevenueEstimates().retail)}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="rounded-lg border border-blue-200 bg-blue-50 p-4">
-                        <p className="text-xs font-medium text-blue-700">Estimasi Pendapatan (Harga Pangkalan)</p>
-                        <p className="mt-1 text-lg font-bold text-blue-900">{formatCurrency(getRevenueEstimates().base)}</p>
+
+                    {/* Pendapatan Saat Ini */}
+                    <div className="rounded-lg border border-green-300 bg-white p-5 shadow-sm">
+                        <div className="mb-3 flex items-center gap-2">
+                            <div className="rounded-full bg-green-100 p-2">
+                                <BanknoteArrowDownIcon className="size-4 text-green-600" />
+                            </div>
+                            <h3 className="text-sm font-semibold text-gray-800">Pendapatan Terealisasi</h3>
+                        </div>
+                        {/* <p className="mb-3 text-xs text-gray-500">Tabung dengan kondisi KOSONG</p> */}
+                        <div className="space-y-2.5">
+                            <div className="flex items-center justify-between rounded-md bg-green-50 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-600">Modal</span>
+                                <span className="text-sm font-bold text-green-700">{formatCurrency(getCurrentRevenue().capital)}</span>
+                            </div>
+                            <div className="flex items-center justify-between rounded-md bg-green-50 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-600">Pangkalan</span>
+                                <span className="text-sm font-bold text-green-700">{formatCurrency(getCurrentRevenue().base)}</span>
+                            </div>
+                            <div className="flex items-center justify-between rounded-md bg-green-50 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-600">Eceran</span>
+                                <span className="text-sm font-bold text-green-700">{formatCurrency(getCurrentRevenue().retail)}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="rounded-lg border border-purple-200 bg-purple-50 p-4">
-                        <p className="text-xs font-medium text-purple-700">Estimasi Pendapatan (Harga Eceran)</p>
-                        <p className="mt-1 text-lg font-bold text-purple-900">{formatCurrency(getRevenueEstimates().retail)}</p>
+
+                    {/* Pendapatan Hilang */}
+                    <div className="rounded-lg border border-red-300 bg-white p-5 shadow-sm">
+                        <div className="mb-3 flex items-center gap-2">
+                            <div className="rounded-full bg-red-100 p-2">
+                                <BanknoteXIcon className="size-4 text-red-600" />
+                            </div>
+                            <h3 className="text-sm font-semibold text-gray-800">Kerugian Potensial</h3>
+                        </div>
+                        {/* <p className="mb-3 text-xs text-gray-500">Tabung dengan kondisi RUSAK</p> */}
+                        <div className="space-y-2.5">
+                            <div className="flex items-center justify-between rounded-md bg-red-50 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-600">Modal</span>
+                                <span className="text-sm font-bold text-red-700">{formatCurrency(getLostRevenue().capital)}</span>
+                            </div>
+                            <div className="flex items-center justify-between rounded-md bg-red-50 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-600">Pangkalan</span>
+                                <span className="text-sm font-bold text-red-700">{formatCurrency(getLostRevenue().base)}</span>
+                            </div>
+                            <div className="flex items-center justify-between rounded-md bg-red-50 px-3 py-2">
+                                <span className="text-xs font-medium text-gray-600">Eceran</span>
+                                <span className="text-sm font-bold text-red-700">{formatCurrency(getLostRevenue().retail)}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
