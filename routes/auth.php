@@ -38,4 +38,8 @@ Route::middleware('auth')->group(function () {
             Route::get('/{gas_location}/edit', 'edit')->name('gas_location.edit');
             Route::patch('/{gas_location}/update', 'update')->name('gas_location.update');
         });
+
+    Route::controller(\App\Http\Controllers\Features\CashierController::class)->prefix('/cashiers')->group(function () {
+        Route::get('/', 'index')->name('cashier.index');
+    });
 });

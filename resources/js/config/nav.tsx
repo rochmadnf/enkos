@@ -1,4 +1,4 @@
-import { Flame, LayoutGrid, LogOut, LucideIcon, MapPinned, User } from 'lucide-react';
+import { Flame, LayoutGrid, LogOut, LucideIcon, MapPinned, ShoppingCart, User } from 'lucide-react';
 import { RefObject } from 'react';
 
 // @User Menu
@@ -55,6 +55,13 @@ export const NAV_ITEMS: NavItem[] = [
         title: 'Dashboard',
         href: route('dashboard'),
         icon: LayoutGrid,
+        permissions: [],
+    },
+    {
+        uuid: 'mni_004',
+        title: 'Transaksi',
+        href: route('cashier.index'),
+        icon: ShoppingCart,
         permissions: [],
     },
     {
