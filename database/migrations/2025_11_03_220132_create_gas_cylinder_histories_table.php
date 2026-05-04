@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('gas_cylinder_histories', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('gas_cylinder_id')->constrained()->onDelete('restrict')->onUpdate('cascade');
-            $table->foreignUuid('location_id')->constrained()->onDelete('restrict')->onUpdate('cascade');
+            $table->foreignUuid('location_id')->constrained('gas_locations')->onDelete('restrict')->onUpdate('cascade');
             $table->unsignedInteger('capital_price');
             $table->unsignedInteger('base_price');
             $table->unsignedInteger('retail_price');
