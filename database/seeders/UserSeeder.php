@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
     {
         $superUser = \App\Models\User::create([
             'name' => 'Super User',
-            'username' => 'super_user',
+            'username' => config('app.username_superior_user'),
             'password' => 'password123',
             'avatar' => null,
         ]);

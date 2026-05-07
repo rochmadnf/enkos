@@ -1,4 +1,4 @@
-import { Flame, LayoutGrid, LogOut, LucideIcon, MapPinned, ShoppingCart, User } from 'lucide-react';
+import { Flame, LayoutGrid, LogOut, LucideIcon, MapPinned, ShoppingCart, User, UsersRoundIcon } from 'lucide-react';
 import { RefObject } from 'react';
 
 // @User Menu
@@ -77,5 +77,12 @@ export const NAV_ITEMS: NavItem[] = [
         href: route('gas_location.index'),
         icon: MapPinned,
         permissions: [],
+    },
+    {
+        uuid: 'mni_005',
+        title: 'Pengguna',
+        href: route('users.index'),
+        icon: UsersRoundIcon,
+        permissions: ['admin'],
     },
 ];

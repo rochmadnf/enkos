@@ -31,6 +31,7 @@ export type PageDataProps = {
             href: string;
         }[];
     };
+    [key: string]: unknown;
 };
 
 export type ColorCombinationProps = {

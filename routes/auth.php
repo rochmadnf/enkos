@@ -24,6 +24,7 @@ Route::middleware('auth')->group(function () {
 
     require __DIR__ . '/features/gas-cylinder.php';
     require __DIR__ . '/features/transaction.php';
+    require __DIR__ . '/features/users.php';
 
     Route::controller(\App\Http\Controllers\GasLocationController::class)
         ->prefix('/gas-locations')
