@@ -14,4 +14,9 @@ export interface CashFlowsIndexProps {
         data: CashFlowDataProps[];
         meta: PaginationMetaProps;
     };
+    balance: {
+        expense: number;
+        income: number;
+        net: number;
+    };
 }

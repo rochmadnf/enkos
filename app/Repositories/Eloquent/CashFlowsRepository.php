@@ -25,4 +25,9 @@ implements \App\Repositories\Contracts\CashFlowsRepositoryInterface
 
         return CashFlowsResource::collection($users);
     }
+
+    public function balance(string $type): int
+    {
+        return (int) CashFlow::where('type', '=', $type)->sum('amount');
+    }
 }

@@ -57,4 +57,9 @@ abstract class BaseRepository
 
         return $record->delete();
     }
+
+    public function create(array $data): Model
+    {
+        return $this->model->create($data);
+    }
 }
