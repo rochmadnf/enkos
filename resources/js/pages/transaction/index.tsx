@@ -16,11 +16,15 @@ type UsePageProps = PageDataProps & {
 const PER_PAGE_LIST = [5, 10, 25, 50, 100];
 
 export default function TransactionIndex() {
-    const { page, transactions: { data: rows, meta } = { data: [], meta: undefined } } = usePage<UsePageProps>().props;
+    const { page, transactions: { data: rows, meta } = { data: [], meta: undefined } } = usePage<UsePageProps & ShareData>().props;
+
+    const { auth } = usePage<PageDataProps>().props as any;
 
     const [perPage, setPerPage] = useState(meta?.per_page || 10);
     const [currentPage, setCurrentPage] = useState(meta?.current_page || 1);
     const [isLoading, setIsLoading] = useState(false);
+
+    const userRole = auth?.user.role;
 
     const handlePageChange = (page: number) => {
         setIsLoading(true);
@@ -103,7 +107,9 @@ export default function TransactionIndex() {
                                         <th className="border-r border-app-primary-300 px-4 py-3 text-right">Jumlah</th>
                                         <th className="border-r border-app-primary-300 px-4 py-3 text-right">Harga Satuan</th>
                                         <th className="border-r border-app-primary-300 px-4 py-3 text-right">Total Harga</th>
-                                        <th className="px-4 py-3 text-center">Aksi</th>
+                                        {userRole === import.meta.env.VITE_APP_SUPERIOR_ROLE_NAME && (
+                                            <th className="border-r border-app-primary-300 px-4 py-3 text-center">Aksi</th>
+                                        )}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,29 +171,31 @@ export default function TransactionIndex() {
                                                 <td className="border-r border-app-primary-300 px-4 py-3 text-right font-semibold">
                                                     Rp {ThousandSeparatorID(transaction.total_price)}
                                                 </td>
-                                                <td className="px-4 py-3">
-                                                    <div className="flex items-center justify-center gap-2">
-                                                        <Link href={route('transaction.edit', transaction.id)}>
+                                                {userRole === import.meta.env.VITE_APP_SUPERIOR_ROLE_NAME && (
+                                                    <td className="px-4 py-3">
+                                                        <div className="flex items-center justify-center gap-2">
+                                                            <Link href={route('transaction.edit', transaction.id)}>
+                                                                <Button
+                                                                    size="sm"
+                                                                    variant="outline"
+                                                                    className="flex items-center gap-1 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                                                                >
+                                                                    <EditIcon className="h-3 w-3" />
+                                                                    Edit
+                                                                </Button>
+                                                            </Link>
                                                             <Button
                                                                 size="sm"
                                                                 variant="outline"
-                                                                className="flex items-center gap-1 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                                                                className="flex items-center gap-1 text-red-600 hover:bg-red-50 hover:text-red-700"
+                                                                onClick={() => handleDelete(transaction.id, transaction.transaction_date)}
                                                             >
-                                                                <EditIcon className="h-3 w-3" />
-                                                                Edit
+                                                                <TrashIcon className="h-3 w-3" />
+                                                                Hapus
                                                             </Button>
-                                                        </Link>
-                                                        <Button
-                                                            size="sm"
-                                                            variant="outline"
-                                                            className="flex items-center gap-1 text-red-600 hover:bg-red-50 hover:text-red-700"
-                                                            onClick={() => handleDelete(transaction.id, transaction.transaction_date)}
-                                                        >
-                                                            <TrashIcon className="h-3 w-3" />
-                                                            Hapus
-                                                        </Button>
-                                                    </div>
-                                                </td>
+                                                        </div>
+                                                    </td>
+                                                )}
                                             </tr>
                                         ))
                                     )}

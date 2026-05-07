@@ -8,8 +8,6 @@ export function Nav() {
 
     const user_permissions = auth?.user?.permissions ?? null;
 
-    console.log('role', auth?.user?.role, 'superior role', import.meta.env.VITE_APP_SUPERIOR_ROLE_NAME);
-
     return (
         <div className="border-grid fixed bottom-0 w-full border-t bg-white">
             <div className="container-wrapper">
