@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Repositories\{Contracts, GasCylinderRepository, GasLocationRepository};
+use App\Repositories\{Contracts, Eloquent, GasCylinderRepository, GasLocationRepository};
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(Contracts\GasCylinderRepositoryInterface::class, GasCylinderRepository::class);
         $this->app->singleton(Contracts\GasLocationRepositoryInterface::class, GasLocationRepository::class);
         $this->app->singleton(Contracts\TransactionRepositoryInterface::class, \App\Repositories\TransactionRepository::class);
+        $this->app->bind(Contracts\UsersRepositoryInterface::class, Eloquent\UsersRepository::class);
     }
 
     /**
