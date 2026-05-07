@@ -14,6 +14,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'username_superior_user' => env('APP_SUPERIOR_USER', 'super_user'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
