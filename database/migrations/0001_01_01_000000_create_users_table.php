@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('name');
             $table->string('username', 16)->unique();
             $table->string('password');
+            $table->boolean('is_active')->default(true);
             $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();

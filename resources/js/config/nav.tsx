@@ -1,4 +1,4 @@
-import { Flame, LayoutGrid, LogOut, LucideIcon, MapPinned, ShoppingCart, User, UsersRoundIcon } from 'lucide-react';
+import { ChartLineIcon, Flame, LayoutGrid, LogOut, LucideIcon, MapPinned, ShoppingCart, User, UsersRoundIcon } from 'lucide-react';
 import { RefObject } from 'react';
 
 // @User Menu
@@ -62,27 +62,34 @@ export const NAV_ITEMS: NavItem[] = [
         title: 'Transaksi',
         href: route('transaction.index'),
         icon: ShoppingCart,
-        permissions: [],
+        permissions: ['read transactions'],
+    },
+    {
+        uuid: 'mni_006',
+        title: 'Arus Kas',
+        href: route('cash-flows.index'),
+        icon: ChartLineIcon,
+        permissions: ['read cash_flows'],
     },
     {
         uuid: 'mni_002',
         title: 'Tabung',
         href: route('gas_cylinder.index'),
         icon: Flame,
-        permissions: [],
+        permissions: ['read gas_cylinders'],
     },
     {
         uuid: 'mni_003',
         title: 'Lokasi',
         href: route('gas_location.index'),
         icon: MapPinned,
-        permissions: [],
+        permissions: ['read gas_locations'],
     },
     {
         uuid: 'mni_005',
         title: 'Pengguna',
         href: route('users.index'),
         icon: UsersRoundIcon,
-        permissions: ['admin'],
+        permissions: ['read users'],
     },
 ];

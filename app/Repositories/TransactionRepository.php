@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Http\Resources\Feature\TransactionResource;
+use App\Models\CashFlow;
 use App\Models\Features\Transaction;
 use App\Models\Features\GasCylinderHistory;
 use App\Repositories\Contracts\TransactionRepositoryInterface;
@@ -13,6 +14,24 @@ use Illuminate\Validation\ValidationException;
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
+    protected function setCashFlow(Transaction $transaction, string $productName = '', array $validated = [], bool $isDeleted = false)
+    {
+        if ($isDeleted) {
+            CashFlow::where('ref_col', "trx/{$transaction->id}")->delete();
+            return;
+        }
+
+        $cashFlow = CashFlow::updateOrCreate(
+            [
+                'ref_col' => "trx/{$transaction->id}",
+            ],
+            [
+                'type' => 'credit',
+                'description' => ($validated['purchase_type'] == \App\Enums\GasCylinder\PurchaseTypeEnum::REFILL->value ? 'Refill' : 'Beli Utuh (Tabung + Gas)') . " {$transaction->quantity} {$productName} di {$transaction->location->name} (Rp" . number_format($transaction->unit_price, 0, ',', '.') . "/tabung)",
+                'amount' => $transaction->total_price,
+            ]
+        );
+    }
     public function paginate(int $perPage = 10): JsonResource
     {
         return TransactionResource::collection(
@@ -154,6 +173,8 @@ class TransactionRepository implements TransactionRepositoryInterface
                 }
             }
 
+            $this->setCashFlow(productName: $gasCylinder->name, transaction: $transaction, validated: $validated);
+
             return $transaction;
         });
     }
@@ -205,6 +226,8 @@ class TransactionRepository implements TransactionRepositoryInterface
 
             $this->reduceStock($validated, $gasCylinder);
 
+            $this->setCashFlow(productName: $gasCylinder->name, transaction: $transaction, validated: $validated);
+
             return $transaction;
         });
     }
@@ -225,6 +248,7 @@ class TransactionRepository implements TransactionRepositoryInterface
             // Kembalikan stok sebelum delete
             $this->restoreStock($transactionData);
 
+            $this->setCashFlow(transaction: $transaction, isDeleted: true);
             $transaction->delete();
 
             return true;

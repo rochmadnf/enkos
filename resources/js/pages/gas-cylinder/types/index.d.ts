@@ -36,12 +36,9 @@ export type FormValues = {
     location_id: string | undefined;
     stock: number;
     status: number | undefined;
-    refill_capital_price: number;
-    refill_base_price: number;
-    refill_retail_price: number;
-    full_capital_price: number;
-    full_base_price: number;
-    full_retail_price: number;
+    capital_price: number;
+    base_price: number;
+    retail_price: number;
 };
 
 export type DataTableShowProps = {

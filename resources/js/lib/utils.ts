@@ -46,3 +46,9 @@ export function formatNumberShort(num: number): string {
 export function ThousandSeparatorID(num: number): string {
     return num.toLocaleString('id-ID');
 }
+
+export function formatRupiah(value: number | string): string {
+    return `Rp${new Intl.NumberFormat('id-ID', {
+        maximumFractionDigits: 0,
+    }).format(Number(value))}`;
+}

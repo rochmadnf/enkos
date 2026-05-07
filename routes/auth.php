@@ -24,12 +24,13 @@ Route::middleware('auth')->group(function () {
 
     require __DIR__ . '/features/gas-cylinder.php';
     require __DIR__ . '/features/transaction.php';
+    require __DIR__ . '/features/cash-flows.php';
     require __DIR__ . '/features/users.php';
 
     Route::controller(\App\Http\Controllers\GasLocationController::class)
         ->prefix('/gas-locations')
         ->group(function () {
-            Route::get('/', 'index')->name('gas_location.index');
+            Route::get('/', 'index')->middleware('permission:read gas_locations')->name('gas_location.index');
 
             Route::get('/add', 'create')->name('gas_location.create');
             Route::post('/add', 'store')->name('gas_location.store');

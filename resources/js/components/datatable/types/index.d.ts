@@ -13,5 +13,5 @@ export type DataTableProps<T> = {
     searchable?: boolean;
     searchPlaceholder?: string;
     searchBy?: string;
-    toolbarRight?: ReactNode;
+    toolbarRight?: ReactNode | false;
 };

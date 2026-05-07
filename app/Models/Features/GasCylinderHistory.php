@@ -18,6 +18,7 @@ class GasCylinderHistory extends Model
         'base_price', // harga pangkalan
         'retail_price', // harga eceran
         'stock',
+        'purchase_type', // refill, tabung + gas
         'status', // isi, kosong, bocor/rusak
     ];
 

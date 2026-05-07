@@ -19,6 +19,14 @@ class UserSeeder extends Seeder
             'avatar' => null,
         ]);
 
-        // insert permissions
+        $superUser->assignRole(config('permission.superior_role_name'));
+
+        $cashierUser = \App\Models\User::create([
+            'name' => 'Kasir',
+            'username' => 'kasir_01',
+            'password' => 'password123',
+        ]);
+
+        $cashierUser->assignRole('Kasir');
     }
 }

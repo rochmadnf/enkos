@@ -1,15 +1,13 @@
 import { DataTable } from '@/components/datatable';
-import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import { PageDataProps } from '@/types';
 import { Head, usePage } from '@inertiajs/react';
-import { PlusIcon } from 'lucide-react';
 import { ReactNode } from 'react';
 import { columns } from './components/columns';
-import { UsersDataProps, UsersIndexProps } from './types';
+import { CashFlowDataProps, CashFlowsIndexProps } from './types';
 
-export default function UsersPageIndex() {
-    const { page, resources } = usePage<PageDataProps & UsersIndexProps>().props;
+export default function CashFlowsIndex() {
+    const { page, resources } = usePage<PageDataProps & CashFlowsIndexProps>().props;
 
     const handleEdit = () => {
         console.log('Edit user');
@@ -31,22 +29,16 @@ export default function UsersPageIndex() {
                     <p className="text-sm font-light tracking-wider sm:text-base">{page.description}</p>
                 </div>
 
-                <DataTable<UsersDataProps>
+                <DataTable<CashFlowDataProps>
                     data={resources.data}
                     metadata={resources.meta}
                     columns={columns({ metadata: resources.meta, onEdit: handleEdit })}
-                    routeName="users.index"
+                    routeName="cash_flows.index"
                     searchable
-                    toolbarRight={
-                        <Button variant="default" className="cursor-pointer" onClick={handleAdd}>
-                            <PlusIcon />
-                            Akun
-                        </Button>
-                    }
                 />
             </div>
         </>
     );
 }
 
-UsersPageIndex.layout = (page: ReactNode) => <AppLayout children={page} />;
+CashFlowsIndex.layout = (page: ReactNode) => <AppLayout children={page} />;

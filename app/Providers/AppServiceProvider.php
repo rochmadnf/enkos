@@ -16,6 +16,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton(Contracts\GasLocationRepositoryInterface::class, GasLocationRepository::class);
         $this->app->singleton(Contracts\TransactionRepositoryInterface::class, \App\Repositories\TransactionRepository::class);
         $this->app->bind(Contracts\UsersRepositoryInterface::class, Eloquent\UsersRepository::class);
+        $this->app->bind(Contracts\CashFlowsRepositoryInterface::class, Eloquent\CashFlowsRepository::class);
     }
 
     /**
@@ -23,6 +24,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        if (app()->isProduction()) {
+            \Illuminate\Support\Facades\URL::forceScheme('https');
+        }
+
+        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+            return $user->hasRole(config('permission.superior_role_name')) ? true : null;
+        });
     }
 }

@@ -7,5 +7,5 @@ Route::controller(\App\Http\Controllers\Features\UserController::class)
     ->name('users.')
     ->group(function () {
 
-        Route::get('/', 'index')->name('index');
+        Route::get('/', 'index')->middleware('permission:read users')->name('index');
     });

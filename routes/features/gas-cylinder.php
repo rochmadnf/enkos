@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 Route::controller(\App\Http\Controllers\GasCylinderController::class)
     ->prefix('gas-cylinders')
     ->group(function () {
-        Route::get('/', 'index')->name('gas_cylinder.index');
+        Route::get('/', 'index')->middleware('permission:read gas_cylinders')->name('gas_cylinder.index');
         Route::post('/', 'store')->name('gas_cylinder.store');
 
         Route::get('/detail', 'show')->name('gas_cylinder.show');

@@ -29,6 +29,22 @@ export const columns = ({ metadata, onEdit }: ColumnsOptions): ColumnDef<UsersDa
         },
     },
     {
+        id: 'username',
+        header: () => 'Username',
+        accessorFn: (row) => row.username,
+        cell: ({ row }) => {
+            return <div>{row.original.username}</div>;
+        },
+    },
+    {
+        id: 'role',
+        header: () => 'Peran',
+        accessorFn: (row) => row.role,
+        cell: ({ row }) => {
+            return <div>{row.original.role}</div>;
+        },
+    },
+    {
         id: 'actions',
         header: '',
         cell: ({ row }) => {

@@ -25,9 +25,9 @@ class GasCylinderRepository implements GasCylinderRepositoryInterface
     public function paginate(int $perPage = 10): JsonResource
     {
         return GasCylinderResource::collection(
-            GasCylinder::when(request()->has('keyword') && request()->get('keyword'), function (Builder $query) {
-                $query->where('name', 'LIKE', '%' . request()->get('keyword') . '%');
-            })->paginate(perPage: request()->has('per_page') ? request()->get('per_page') : $perPage),
+            GasCylinder::when(request()->has('keyword') && request()->input('keyword'), function (Builder $query) {
+                $query->where('name', 'LIKE', '%' . request()->input('keyword') . '%');
+            })->paginate(perPage: request()->has('per_page') ? request()->input('per_page') : $perPage),
         );
     }
 

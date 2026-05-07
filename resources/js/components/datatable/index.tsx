@@ -110,7 +110,7 @@ export function DataTable<T>({
     const showToolbar = searchable || !!toolbarRight;
 
     return (
-        <div className="border-line-brand space-y-3 rounded-md border bg-slate-50/80 p-6">
+        <div className="space-y-3 rounded-md border border-app-primary-300 bg-slate-50/80 p-6">
             {/* Toolbar */}
             {showToolbar && (
                 <div className="flex items-center justify-between gap-x-3">
@@ -131,19 +131,19 @@ export function DataTable<T>({
                         <div />
                     )}
 
-                    {toolbarRight && <div className="flex items-center gap-x-2">{toolbarRight}</div>}
+                    {toolbarRight !== false && <div className="flex items-center gap-x-2">{toolbarRight}</div>}
                 </div>
             )}
 
             {/* Table */}
-            <div className="border-line-brand overflow-hidden rounded-md border bg-white">
+            <div className="overflow-hidden rounded-md border border-app-primary-300 bg-white">
                 <Table>
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
                             <TableRow key={headerGroup.id}>
                                 {headerGroup.headers.map((header) => (
                                     <TableHead
-                                        className={cn('p-4', header.column.columnDef.meta?.className)}
+                                        className={cn('bg-app-primary-500 p-4 text-app-primary-50', header.column.columnDef.meta?.className)}
                                         key={header.id}
                                         style={{ width: header.column.columnDef.meta?.width }}
                                     >
@@ -156,7 +156,7 @@ export function DataTable<T>({
                     <TableBody>
                         {rows.length ? (
                             rows.map((row) => (
-                                <TableRow className="group/tr hover:bg-sidebar-menu-bg hover:text-sidebar-menu-text" key={row.id}>
+                                <TableRow className="group/tr hover:bg-app-primary-50/85" key={row.id}>
                                     {row.getVisibleCells().map((cell) => (
                                         <TableCell
                                             className={cn('p-4', cell.column.columnDef.meta?.className)}

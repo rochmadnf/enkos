@@ -4,15 +4,27 @@ import { PageDataProps } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 
 export function Nav() {
-    const { page } = usePage<PageDataProps>().props;
+    const { page, auth } = usePage<PageDataProps>().props as any;
+
+    const user_permissions = auth?.user?.permissions ?? null;
+
+    console.log('role', auth?.user?.role, 'superior role', import.meta.env.VITE_APP_SUPERIOR_ROLE_NAME);
+
     return (
         <div className="border-grid fixed bottom-0 w-full border-t bg-white">
             <div className="container-wrapper">
                 <nav aria-label="navigation-menu" dir="ltr" className="h-10">
                     <ul className="relative flex h-full uppercase">
-                        {NAV_ITEMS.map((menu) => (
-                            <Item {...menu} key={menu.uuid} isActive={page.uuid === menu.uuid} />
-                        ))}
+                        {NAV_ITEMS.map((menu) => {
+                            if (
+                                menu.permissions.length == 0 ||
+                                user_permissions?.some((permission: string) => menu.permissions.includes(permission)) ||
+                                auth?.user?.role === import.meta.env.VITE_APP_SUPERIOR_ROLE_NAME
+                            ) {
+                                return <Item {...menu} key={menu.uuid} isActive={page.uuid === menu.uuid} />;
+                            }
+                            return null;
+                        })}
                     </ul>
                 </nav>
             </div>
