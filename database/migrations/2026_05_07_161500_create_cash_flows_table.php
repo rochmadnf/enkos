@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('cash_flows', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->enum('type', ['credit', 'debit']);
+            $table->foreignId('cash_flow_category_id')->constrained('cash_flow_categories')->onDelete('cascade');
+            $table->date('perfom_at');
             $table->string('description');
             $table->string('ref_col')->nullable()->comment('Reference column for the cash flow, ex: transaction/id');
             $table->unsignedBigInteger('amount');

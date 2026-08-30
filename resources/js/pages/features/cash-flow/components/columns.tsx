@@ -6,7 +6,7 @@ import { CashFlowDataProps } from '../types';
 
 interface ColumnsOptions {
     metadata: PaginationMetaProps;
-    onEdit: (user: CashFlowDataProps) => void;
+    onEdit: (transaction: CashFlowDataProps) => void;
 }
 
 export const columns = ({ metadata, onEdit }: ColumnsOptions): ColumnDef<CashFlowDataProps>[] => [
@@ -31,8 +31,8 @@ export const columns = ({ metadata, onEdit }: ColumnsOptions): ColumnDef<CashFlo
         id: 'type',
         header: () => 'Kategori',
         cell: ({ row }) => {
-            const { type } = row.original;
-            return <Badge variant={type === 'credit' ? 'success' : 'destructive'}>{type === 'credit' ? 'Pemasukan' : 'Pengeluaran'}</Badge>;
+            const { category } = row.original;
+            return <Badge variant={category?.flow_type_id === 1 ? 'success' : 'destructive'}>{category?.name}</Badge>;
         },
     },
     {

@@ -2,9 +2,12 @@ import { PaginationMetaProps } from '@/types/pagination';
 
 export interface CashFlowDataProps {
     id: string;
-    type: string;
+    category: {
+        id: number;
+        name: string;
+        flow_type_id: number;
+    };
     description: string;
-    ref_col: string;
     amount: number;
     create: string;
 }

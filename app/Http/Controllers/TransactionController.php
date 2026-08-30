@@ -63,10 +63,10 @@ class TransactionController extends Controller
 
     public function getStockInfo()
     {
-        $locationId = request()->get('location_id');
-        $gasCylinderId = request()->get('gas_cylinder_id');
-        $quantity = request()->get('quantity', 0);
-        $priceType = request()->get('price_type'); // 1 = base, 2 = retail
+        $locationId = request()->input('location_id');
+        $gasCylinderId = request()->input('gas_cylinder_id');
+        $quantity = request()->input('quantity', 0);
+        $priceType = request()->input('price_type'); // 1 = base, 2 = retail
 
         if (!$locationId || !$gasCylinderId) {
             return response()->json(['stock' => 0, 'unit_price' => 0, 'total_price' => 0]);
@@ -124,7 +124,7 @@ class TransactionController extends Controller
 
     public function getCylindersByLocation()
     {
-        $locationId = request()->get('location_id');
+        $locationId = request()->input('location_id');
 
         if (!$locationId) {
             return response()->json(['data' => []]);

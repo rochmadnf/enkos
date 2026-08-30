@@ -6,6 +6,7 @@ use App\Http\Resources\Feature\TransactionResource;
 use App\Models\CashFlow;
 use App\Models\Features\Transaction;
 use App\Models\Features\GasCylinderHistory;
+use App\Models\Finance\CashFlowCategory;
 use App\Repositories\Contracts\TransactionRepositoryInterface;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -26,12 +27,14 @@ class TransactionRepository implements TransactionRepositoryInterface
                 'ref_col' => "trx/{$transaction->id}",
             ],
             [
-                'type' => 'credit',
+                'cash_flow_category_id' => CashFlowCategory::where('name', 'Penjualan Tabung Gas')->first()?->id ?? 1,
                 'description' => ($validated['purchase_type'] == \App\Enums\GasCylinder\PurchaseTypeEnum::REFILL->value ? 'Refill' : 'Beli Utuh (Tabung + Gas)') . " {$transaction->quantity} {$productName} di {$transaction->location->name} (Rp" . number_format($transaction->unit_price, 0, ',', '.') . "/tabung)",
                 'amount' => $transaction->total_price,
+                'perfom_at' => $transaction->transaction_date,
             ]
         );
     }
+
     public function paginate(int $perPage = 10): JsonResource
     {
         return TransactionResource::collection(

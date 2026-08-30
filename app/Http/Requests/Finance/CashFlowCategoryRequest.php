@@ -19,12 +19,12 @@ class CashFlowCategoryRequest extends FormRequest
     public function rules(): array
     {
         $rules =  [
-            'id' => ['integer', Rule::requiredIf(fn() => $this->routeIs('cash-flow.category.update'))],
+            'id' => ['integer', Rule::requiredIf(fn() => $this->routeIs('cash-flows.categories.update'))],
             'name' => ['required', 'string', 'min:3', 'max:200'],
             'flow_type_id' => ['required', 'integer', Rule::enum(\App\Enums\Finance\CashFlowCategoryEnum::class)],
         ];
 
-        $rules['name'][] = Rule::unique('cash_flow_categories', 'name')->when($this->routeIs('cash-flow.category.update'), function ($query) {
+        $rules['name'][] = Rule::unique('cash_flow_categories', 'name')->when($this->routeIs('cash-flows.categories.update'), function ($query) {
             $query->ignore($this->id);
         });
 

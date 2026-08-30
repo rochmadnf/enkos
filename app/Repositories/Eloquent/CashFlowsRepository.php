@@ -21,7 +21,7 @@ implements \App\Repositories\Contracts\CashFlowsRepositoryInterface
 
     public function paginate(int $perPage = 10): JsonResource
     {
-        $users = CashFlow::latest('created_at')->paginate(perPage: request()->input('per_page', $perPage));
+        $users = CashFlow::with('cashFlowCategory')->orderBy('perfom_at', 'DESC')->latest('created_at')->paginate(perPage: request()->input('per_page', $perPage));
 
         return CashFlowsResource::collection($users);
     }

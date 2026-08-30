@@ -16,11 +16,11 @@ class CashFlowsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'type' => $this->type,
+            'category' => $this->cashFlowCategory ?? null,
             'description' => $this->description,
             'ref_col' => $this->ref_col ?? null,
             'amount' => $this->amount,
-            'create' => $this->created_at->translatedFormat('l, d F Y'),
+            'create' => $this->perfom_at->translatedFormat('l, d F Y'),
         ];
     }
 }

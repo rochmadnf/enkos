@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Features;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCashFlowRequest;
+use App\Http\Resources\Finance\CashFlowCategoryResource;
+use App\Models\CashFlow;
+use App\Models\Finance\CashFlowCategory;
 
 class CashFlowController extends Controller
 {
@@ -25,10 +28,18 @@ class CashFlowController extends Controller
                 'description' => 'Menampilkan seluruh pemasukan dan pengeluaran',
             ],
             'resources' => $this->csr->paginate(perPage: request()->input('per_page', $this->defaultPerPage)),
+            'cfCategories' => cache()->remember('cfCategories', 60, function () {
+                return CashFlowCategoryResource::collection(
+                    CashFlowCategory::query()
+                        ->orderBy('name', 'asc')
+                        ->get()
+                );
+            }),
+
             'balance' => [
-                'income' => $bIncome = $this->csr->balance(type: 'credit'),
-                'expense' => $bExpense = $this->csr->balance(type: 'debit'),
-                'net' => $bIncome - $bExpense,
+                'income' => $totalPemasukan = CashFlow::income()->sum('amount'),
+                'expense' => $totalPengeluaran = CashFlow::expense()->sum('amount'),
+                'net' => $totalPemasukan - $totalPengeluaran,
             ]
         ]);
     }

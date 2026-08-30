@@ -22,20 +22,28 @@ class StoreCashFlowRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'type' => ['required', 'in:credit,debit'],
+            'cash_flow_category_id' => ['required', 'exists:cash_flow_categories,id'],
+            'perfom_at' => ['required', 'date', 'date_format:Y-m-d'],
             'description' => ['required', 'string', 'max:255'],
             'amount' => ['required', 'integer', 'min:1'],
         ];
     }
 
-    /**
-     * Get custom messages for validator errors.
-     */
+    public function attributes(): array
+    {
+        return [
+            'cash_flow_category_id' => 'Jenis arus kas',
+            'perfom_at' => 'Tanggal',
+            'description' => 'Deskripsi',
+            'amount' => 'Nominal',
+        ];
+    }
+
     public function messages(): array
     {
         return [
-            'type.required' => 'Jenis arus kas harus dipilih',
-            'type.in' => 'Jenis arus kas harus berupa pemasukan atau pengeluaran',
+            'cash_flow_category_id.required' => 'Jenis arus kas harus dipilih',
+            'cash_flow_category_id.exists' => 'Jenis arus kas tidak valid',
             'description.required' => 'Deskripsi harus diisi',
             'description.max' => 'Deskripsi maksimal 255 karakter',
             'amount.required' => 'Nominal harus diisi',
