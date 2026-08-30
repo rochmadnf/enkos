@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('cash_flow_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('flow_type_id');
+            $table->unsignedSmallInteger('flow_type_id');
             $table->timestamps();
         });
     }
